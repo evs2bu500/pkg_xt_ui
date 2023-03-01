@@ -6,6 +6,7 @@ export 'wdgt/xtText.dart';
 export 'wdgt/xtButton.dart';
 export 'wdgt/xtTextField.dart';
 export 'wdgt/xtWait.dart';
+export 'wdgt/xtInfoBox.dart';
 export 'style/xt_colors.dart';
 export 'style/xt_styles.dart';
 export 'util/xt_util_FormCoordinator.dart';
