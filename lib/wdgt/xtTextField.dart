@@ -149,7 +149,6 @@ class _xtTextFieldState extends State<xtTextField> {
     }
   }
 
-  // Focus nodes need to be disposed.
   @override
   void dispose() {
     _focusNode.dispose();
