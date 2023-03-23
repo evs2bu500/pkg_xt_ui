@@ -27,7 +27,7 @@ class xtInfoBox extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: boarderColor ?? Colors.white),
-        // borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(borderRadius ?? 0),
       ),
       padding: const EdgeInsets.all(13.0),
       child: Row(
