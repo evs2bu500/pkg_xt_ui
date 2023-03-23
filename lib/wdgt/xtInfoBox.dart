@@ -38,11 +38,12 @@ class xtInfoBox extends StatelessWidget {
           ),
           SizedBox(
             width: width ?? 0.7 * MediaQuery.of(context).size.width,
-            child: Text(text ?? '',
-                style: TextStyle(
-                    color: textColor ?? Colors.white,
-                    fontSize: 17,
-                    fontStyle: FontStyle.italic)),
+            child: Text(borderRadius.toString()),
+            // child: Text(text ?? '',
+            //     style: TextStyle(
+            //         color: textColor ?? Colors.white,
+            //         fontSize: 17,
+            //         fontStyle: FontStyle.italic)),
           ),
         ],
       ),
