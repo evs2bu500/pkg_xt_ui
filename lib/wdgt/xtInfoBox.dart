@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:xt_ui/xt_ui.dart';
 
 class xtInfoBox extends StatelessWidget {
-  const xtInfoBox({
-    Key? key,
-    this.width,
-    this.height,
-    this.icon,
-    this.text,
-    this.textColor,
-    this.boarderColor,
-    this.borderRadius,
-  }) : super(key: key);
+  const xtInfoBox(
+      {Key? key,
+      this.width,
+      this.height,
+      this.icon,
+      this.text,
+      this.textColor,
+      this.boarderColor,
+      this.borderRadius,
+      this.fontSize,
+      this.fontstyle})
+      : super(key: key);
 
   final Icon? icon;
   final String? text;
@@ -21,12 +23,14 @@ class xtInfoBox extends StatelessWidget {
   final double? width;
   final double? height;
   final double? borderRadius;
+  final double? fontSize;
+  final FontStyle? fontstyle;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: boarderColor ?? Colors.white),
+        border: Border.all(color: boarderColor ?? xtTransParent),
         borderRadius: BorderRadius.circular(borderRadius ?? 0),
       ),
       padding: const EdgeInsets.all(13.0),
@@ -38,12 +42,12 @@ class xtInfoBox extends StatelessWidget {
           ),
           SizedBox(
             width: width ?? 0.7 * MediaQuery.of(context).size.width,
-            child: Text(borderRadius.toString()),
-            // child: Text(text ?? '',
-            //     style: TextStyle(
-            //         color: textColor ?? Colors.white,
-            //         fontSize: 17,
-            //         fontStyle: FontStyle.italic)),
+            height: height ?? 0.1 * MediaQuery.of(context).size.height,
+            child: Text(text ?? '',
+                style: TextStyle(
+                    color: textColor ?? Colors.white,
+                    fontSize: fontSize ?? 17,
+                    fontStyle: fontstyle ?? FontStyle.normal)),
           ),
         ],
       ),
