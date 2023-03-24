@@ -16,6 +16,7 @@ class xtTextField extends StatefulWidget {
       this.doCommCheckUnique,
       this.tfKey,
       this.formCoordinator,
+      this.initialText,
       // this.formProvider,
       // this.canRequestFocus,
       // this.autofocus,
@@ -35,6 +36,7 @@ class xtTextField extends StatefulWidget {
   Enum? tfKey;
   // FormProvider? formProvider;
   xt_util_FormCorrdinator? formCoordinator;
+  String? initialText;
 
   // bool? canRequestFocus;
   // bool? autofocus;
@@ -189,6 +191,7 @@ class _xtTextFieldState extends State<xtTextField> {
           obscureText: widget.obscureText,
           disabled: _disabled,
           maxLength: widget.maxLength,
+          initialText: widget.initialText,
         ),
       ),
     );
@@ -287,6 +290,7 @@ class _txTextField extends StatelessWidget {
     required this.obscureText,
     required this.maxLength,
     required this.disabled,
+    required this.initialText,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -299,9 +303,13 @@ class _txTextField extends StatelessWidget {
   final void Function()? onTap;
   final void Function(String)? onChanged;
   final String? Function(String)? doValidate;
+  final String? initialText;
 
   @override
   Widget build(BuildContext context) {
+    if (controller.text.isEmpty && initialText != null) {
+      controller.text = initialText!;
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: TextField(
