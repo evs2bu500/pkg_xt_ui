@@ -265,7 +265,7 @@ class _xtTextFieldState extends State<xtTextField> {
         dbUnique = false;
         suffix = null;
         if (dbresult == 'taken') {
-          errorText = '$field already used';
+          errorText = '${field.name} already used';
         } else {
           errorText = 'Service Error';
         }
