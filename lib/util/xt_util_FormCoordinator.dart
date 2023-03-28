@@ -56,7 +56,7 @@ class xt_util_FormCorrdinator {
         if (formData[key] != null) {
           Function? func = fieldCheckUnique[key];
           if (func != null) {
-            await func(key.name, formData[key]);
+            await func(key, formData[key]);
           }
         }
       }),

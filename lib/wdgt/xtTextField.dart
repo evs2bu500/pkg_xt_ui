@@ -122,7 +122,7 @@ class _xtTextFieldState extends State<xtTextField> {
 
               if (widget.tfKey != null && widget.doCommCheckUnique != null) {
                 checkUnique(
-                    widget.tfKey!, _controller.text, widget.doCommCheckUnique!);
+                    widget.tfKey!, _controller.text/*, widget.doCommCheckUnique!*/);
               }
             }
           }
@@ -245,8 +245,8 @@ class _xtTextFieldState extends State<xtTextField> {
   }
 
   Future<void> checkUnique(Enum field, String val,
-      Future<String> doCommFunc(Enum fld, String v)) async {
-    if (doCommFunc == null) {
+    /*Future<String> doCommFunc(Enum fld, String v)*/) async {
+    if (widget.doCommCheckUnique == null) {
       return;
     }
 
@@ -254,7 +254,7 @@ class _xtTextFieldState extends State<xtTextField> {
       suffix = txTextInputSuffix('waiting', null);
     });
 
-    var dbresult = await doCommFunc(field, val);
+    var dbresult = await widget.doCommCheckUnique!(field, val);
 
     setState(() {
       if (dbresult == 'available') {
