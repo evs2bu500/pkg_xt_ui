@@ -10,7 +10,9 @@ class xtButton extends StatefulWidget {
     required this.onPressed,
     this.xtKey,
     this.color = kcPrimaryColor,
+    this.shadowColor,
     this.textColor = Colors.white,
+    this.textStyle,
     this.width = double.infinity,
     this.height = 50,
     this.borderRadius = 8,
@@ -22,7 +24,9 @@ class xtButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
   final Color? color;
+  final Color? shadowColor;
   final Color? textColor;
+  final TextStyle? textStyle;
   final double? width;
   final double? height;
   final double? borderRadius;
@@ -63,6 +67,7 @@ class _xtButtonState extends State<xtButton> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.color,
+                shadowColor: widget.shadowColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(widget.borderRadius!),
                 ),
@@ -70,10 +75,11 @@ class _xtButtonState extends State<xtButton> {
               onPressed: widget.onPressed,
               child: Text(
                 widget.text,
-                style: TextStyle(
-                    color: widget.textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
+                style: widget.textStyle ??
+                    TextStyle(
+                        color: widget.textColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
               ),
             ),
           ),
