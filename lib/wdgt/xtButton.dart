@@ -9,6 +9,8 @@ class xtButton extends StatefulWidget {
     required this.text,
     required this.onPressed,
     this.xtKey,
+    this.outlined = false,
+    this.outlineColor = kcPrimaryColor,
     this.color = kcPrimaryColor,
     this.shadowColor,
     this.textColor = Colors.white,
@@ -23,6 +25,8 @@ class xtButton extends StatefulWidget {
 
   final String text;
   final VoidCallback onPressed;
+  final bool? outlined;
+  final Color? outlineColor;
   final Color? color;
   final Color? shadowColor;
   final Color? textColor;
@@ -65,13 +69,24 @@ class _xtButtonState extends State<xtButton> {
             width: widget.width,
             height: widget.height,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.color,
-                shadowColor: widget.shadowColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(widget.borderRadius!),
-                ),
-              ),
+              style: widget.outlined!
+                  ? OutlinedButton.styleFrom(
+                      backgroundColor: widget.color,
+                      shadowColor: widget.shadowColor,
+                      side: BorderSide(color: widget.outlineColor!, width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(widget.borderRadius!),
+                      ),
+                    )
+                  : ElevatedButton.styleFrom(
+                      backgroundColor: widget.color,
+                      shadowColor: widget.shadowColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(widget.borderRadius!),
+                      ),
+                    ),
               onPressed: widget.onPressed,
               child: Text(
                 widget.text,
