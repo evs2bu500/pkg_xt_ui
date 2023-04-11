@@ -16,6 +16,7 @@ class xtTextField extends StatefulWidget {
       this.doCommCheckUnique,
       this.tfKey,
       this.formCoordinator,
+      this.controller,
       this.initialText,
       // this.formProvider,
       // this.canRequestFocus,
@@ -36,7 +37,9 @@ class xtTextField extends StatefulWidget {
   Enum? tfKey;
   // FormProvider? formProvider;
   xt_util_FormCorrdinator? formCoordinator;
-  String? initialText;
+  TextEditingController? controller;
+
+  final String? initialText;
 
   // bool? canRequestFocus;
   // bool? autofocus;
@@ -75,23 +78,6 @@ class _xtTextFieldState extends State<xtTextField> {
     super.initState();
 
     _controller = TextEditingController();
-    _controller.addListener(
-      //afer providing a listener,
-      //the provided onChanged handler should be called inside the listener
-      () {
-        if (widget.onChanged != null) {
-          setState(() {
-            if (_controller.text != storedText) {
-              suffix = null;
-            }
-            errorText = widget.onChanged!(_controller.text);
-            if (widget.formCoordinator != null && widget.tfKey != null) {
-              widget.formCoordinator!.formErrors[widget.tfKey!] = errorText;
-            }
-          });
-        }
-      },
-    );
 
     _focusNode = FocusNode(canRequestFocus: true);
     _focusNode.addListener(() {
@@ -121,34 +107,14 @@ class _xtTextFieldState extends State<xtTextField> {
               //filled and validated and db check needed
 
               if (widget.tfKey != null && widget.doCommCheckUnique != null) {
-                checkUnique(
-                    widget.tfKey!, _controller.text/*, widget.doCommCheckUnique!*/);
+                checkUnique(widget.tfKey!,
+                    _controller.text /*, widget.doCommCheckUnique!*/);
               }
             }
           }
         }
       }
     });
-
-    if (widget.formCoordinator != null) {
-      if (widget.tfKey != null) {
-        widget.formCoordinator!
-            .regFieldUpdateErrorText(widget.tfKey!, updateError);
-        widget.formCoordinator!
-            .regFieldToggleDisabled(widget.tfKey!, toggleDisabled);
-        widget.formCoordinator!.regFieldSave(widget.tfKey!, saveField);
-
-        if (widget.doValidate != null) {
-          widget.formCoordinator!
-              .regFieldValidator(widget.tfKey!, widget.doValidate!);
-        }
-
-        if (widget.requireUnique ?? false) {
-          widget.formCoordinator!
-              .regFieldCheckUnique(widget.tfKey!, checkUnique);
-        }
-      }
-    }
   }
 
   @override
@@ -160,6 +126,8 @@ class _xtTextFieldState extends State<xtTextField> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => onAfterBuild(context));
+
     if (widget.decoration != null) {
       decoration =
           widget.decoration!.copyWith(errorText: errorText, suffix: suffix);
@@ -183,7 +151,7 @@ class _xtTextFieldState extends State<xtTextField> {
       child: FocusTraversalOrder(
         order: order,
         child: _txTextField(
-          controller: _controller,
+          controller: widget.controller ?? _controller,
           decoration: decoration,
           onTap: widget.onTap,
           onChanged: widget.onChanged,
@@ -244,8 +212,11 @@ class _xtTextFieldState extends State<xtTextField> {
     });
   }
 
-  Future<void> checkUnique(Enum field, String val,
-    /*Future<String> doCommFunc(Enum fld, String v)*/) async {
+  Future<void> checkUnique(
+    Enum field,
+    String val,
+    /*Future<String> doCommFunc(Enum fld, String v)*/
+  ) async {
     if (widget.doCommCheckUnique == null) {
       return;
     }
@@ -276,6 +247,46 @@ class _xtTextFieldState extends State<xtTextField> {
     });
 
     return;
+  }
+
+  onAfterBuild(BuildContext context) {
+    _controller.addListener(
+      //afer providing a listener,
+      //the provided onChanged handler should be called inside the listener
+      () {
+        if (widget.onChanged != null) {
+          setState(() {
+            if (_controller.text != storedText) {
+              suffix = null;
+            }
+            errorText = widget.onChanged!(_controller.text);
+            if (widget.formCoordinator != null && widget.tfKey != null) {
+              widget.formCoordinator!.formErrors[widget.tfKey!] = errorText;
+            }
+          });
+        }
+      },
+    );
+
+    if (widget.formCoordinator != null) {
+      if (widget.tfKey != null) {
+        widget.formCoordinator!
+            .regFieldUpdateErrorText(widget.tfKey!, updateError);
+        widget.formCoordinator!
+            .regFieldToggleDisabled(widget.tfKey!, toggleDisabled);
+        widget.formCoordinator!.regFieldSave(widget.tfKey!, saveField);
+
+        if (widget.doValidate != null) {
+          widget.formCoordinator!
+              .regFieldValidator(widget.tfKey!, widget.doValidate!);
+        }
+
+        if (widget.requireUnique ?? false) {
+          widget.formCoordinator!
+              .regFieldCheckUnique(widget.tfKey!, checkUnique);
+        }
+      }
+    }
   }
 }
 
