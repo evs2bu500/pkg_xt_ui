@@ -23,6 +23,7 @@ class xtTextField extends StatefulWidget {
       // this.autofocus,
       this.order,
       this.maxLength,
+      this.inputFormatters,
       this.disabled})
       : super(key: key);
 
@@ -45,6 +46,7 @@ class xtTextField extends StatefulWidget {
   // bool? autofocus;
   int? order;
   int? maxLength;
+  List<TextInputFormatter>? inputFormatters;
   bool? disabled;
 
   @override
@@ -160,6 +162,7 @@ class _xtTextFieldState extends State<xtTextField> {
           disabled: _disabled,
           maxLength: widget.maxLength,
           initialText: widget.initialText,
+          inputFormatters: widget.inputFormatters,
         ),
       ),
     );
@@ -302,6 +305,7 @@ class _txTextField extends StatelessWidget {
     required this.maxLength,
     required this.disabled,
     required this.initialText,
+    required this.inputFormatters,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -315,6 +319,7 @@ class _txTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final String? Function(String)? doValidate;
   final String? initialText;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -331,6 +336,7 @@ class _txTextField extends StatelessWidget {
         obscureText: obscureText ?? false,
         maxLength: maxLength,
         enabled: !(disabled ?? false),
+        inputFormatters: inputFormatters,
         // buildInputDecoration(hintText, errorText, errorColor, icon, suffix),
       ),
     );
@@ -349,7 +355,7 @@ InputDecoration xtBuildInputDecoration(
     //suffixIcon: will be placed in front of suffix
     //if suffix is null, there will be a space
     suffix: Padding(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: suffix,
     ),
     errorText: errorText,
