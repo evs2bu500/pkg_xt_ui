@@ -13,7 +13,8 @@ class xtInfoBox extends StatelessWidget {
       this.boarderColor,
       this.borderRadius,
       this.fontSize,
-      this.fontstyle})
+      this.fontstyle,
+      this.padding})
       : super(key: key);
 
   final Icon? icon;
@@ -25,6 +26,7 @@ class xtInfoBox extends StatelessWidget {
   final double? borderRadius;
   final double? fontSize;
   final FontStyle? fontstyle;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +35,28 @@ class xtInfoBox extends StatelessWidget {
         border: Border.all(color: boarderColor ?? xtTransParent),
         borderRadius: BorderRadius.circular(borderRadius ?? 0),
       ),
-      padding: const EdgeInsets.all(13.0),
+      padding: padding ?? const EdgeInsets.all(13.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: icon,
-          ),
-          SizedBox(
-            width: width ?? 0.7 * MediaQuery.of(context).size.width,
-            height: height ?? 0.1 * MediaQuery.of(context).size.height,
-            child: Text(text ?? '',
-                style: TextStyle(
-                    color: textColor ?? Colors.white,
-                    fontSize: fontSize ?? 17,
-                    fontStyle: fontstyle ?? FontStyle.normal)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: icon,
+              ),
+              Center(
+                child: Text(text ?? '',
+                    style: TextStyle(
+                        color: textColor ?? Colors.white,
+                        fontSize: fontSize ?? 17,
+                        fontStyle: fontstyle ?? FontStyle.normal)),
+              ),
+            ],
           ),
         ],
       ),
