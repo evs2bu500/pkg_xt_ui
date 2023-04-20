@@ -12,8 +12,9 @@ class xtInfoBox extends StatelessWidget {
       this.textColor,
       this.boarderColor,
       this.borderRadius,
-      this.fontSize,
-      this.fontstyle,
+      // this.fontSize,
+      // this.fontstyle,
+      this.textStyle,
       this.padding})
       : super(key: key);
 
@@ -24,8 +25,9 @@ class xtInfoBox extends StatelessWidget {
   final double? width;
   final double? height;
   final double? borderRadius;
-  final double? fontSize;
-  final FontStyle? fontstyle;
+  final TextStyle? textStyle;
+  // final double? fontSize;
+  // final FontStyle? fontstyle;
   final EdgeInsetsGeometry? padding;
 
   @override
@@ -51,10 +53,11 @@ class xtInfoBox extends StatelessWidget {
               ),
               Center(
                 child: Text(text ?? '',
-                    style: TextStyle(
-                        color: textColor ?? Colors.white,
-                        fontSize: fontSize ?? 17,
-                        fontStyle: fontstyle ?? FontStyle.normal)),
+                    style: textStyle ??
+                        TextStyle(
+                            color: textColor ?? Colors.white,
+                            fontSize: 17,
+                            fontStyle: FontStyle.normal)),
               ),
             ],
           ),
