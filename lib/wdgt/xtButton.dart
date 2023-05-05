@@ -21,6 +21,7 @@ class xtButton extends StatefulWidget {
     // this.errorText,
     // this.destPage = '/',
     this.formCoordinator,
+    this.waiting = false,
   }) : super(key: key);
 
   final String text;
@@ -37,6 +38,7 @@ class xtButton extends StatefulWidget {
   // String? errorText;
   btnKey? xtKey;
   xt_util_FormCorrdinator? formCoordinator;
+  bool waiting = false;
 
   @override
   State<xtButton> createState() => _xtButtonState();
@@ -88,13 +90,26 @@ class _xtButtonState extends State<xtButton> {
                       ),
                     ),
               onPressed: widget.onPressed,
-              child: Text(
-                widget.text,
-                style: widget.textStyle ??
-                    TextStyle(
-                        color: widget.textColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.text,
+                    style: widget.textStyle ??
+                        TextStyle(
+                            color: widget.textColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                  ),
+                  widget.waiting
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: xtWait(
+                            color: widget.textColor,
+                          ),
+                        )
+                      : Container(),
+                ],
               ),
             ),
           ),
