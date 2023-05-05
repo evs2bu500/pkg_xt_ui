@@ -22,6 +22,7 @@ class xtButton extends StatefulWidget {
     // this.destPage = '/',
     this.formCoordinator,
     this.waiting = false,
+    this.textSuffix,
   }) : super(key: key);
 
   final String text;
@@ -39,6 +40,7 @@ class xtButton extends StatefulWidget {
   btnKey? xtKey;
   xt_util_FormCorrdinator? formCoordinator;
   bool waiting = false;
+  Widget? textSuffix;
 
   @override
   State<xtButton> createState() => _xtButtonState();
@@ -108,7 +110,7 @@ class _xtButtonState extends State<xtButton> {
                             color: widget.textColor,
                           ),
                         )
-                      : Container(),
+                      : widget.textSuffix ?? Container(),
                 ],
               ),
             ),
