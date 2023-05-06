@@ -103,14 +103,14 @@ class _xtButtonState extends State<xtButton> {
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
                   ),
-                  widget.waiting
-                      ? Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: xtWait(
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: widget.waiting
+                        ? xtWait(
                             color: widget.textColor,
-                          ),
-                        )
-                      : widget.textSuffix ?? Container(),
+                          )
+                        : widget.textSuffix ?? Container(),
+                  )
                 ],
               ),
             ),
