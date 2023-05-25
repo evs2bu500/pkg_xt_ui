@@ -8,6 +8,7 @@ class xt_util_FormCorrdinator {
   Map<Enum, Function> fieldCheckUnique = {};
   Map<Enum, Function> toggleWait = {};
   Map<Enum, Function> fieldSave = {};
+  Map<Enum, Function> fieldClearText = {};
 
   void regFieldUpdateErrorText(Enum fieldKey, Function udpateErrorText) {
     fieldUpdateErrors[fieldKey] = udpateErrorText;
@@ -29,6 +30,10 @@ class xt_util_FormCorrdinator {
     toggleWait[fieldKey] = funcWait;
   }
 
+  void regClearText(Enum fieldKey, Function funcClearText) {
+    fieldClearText[fieldKey] = funcClearText;
+  }
+
   void regFieldSave(Enum fieldKey, Function hdlSave) {
     fieldSave[fieldKey] = hdlSave;
   }
@@ -45,6 +50,12 @@ class xt_util_FormCorrdinator {
   void toggleDisabledAll(bool disabled) {
     for (Enum key in fieldToggleDisalbed.keys) {
       fieldToggleDisalbed[key]!(disabled);
+    }
+  }
+
+  void clearTextAll() {
+    for (Enum key in fieldClearText.keys) {
+      fieldClearText[key]!();
     }
   }
 

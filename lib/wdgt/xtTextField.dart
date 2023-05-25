@@ -168,6 +168,10 @@ class _xtTextFieldState extends State<xtTextField> {
     );
   }
 
+  void clearText() {
+    _controller.clear();
+  }
+
   void updateError(String? error) {
     setState(() {
       errorText = error;
@@ -278,12 +282,12 @@ class _xtTextFieldState extends State<xtTextField> {
         widget.formCoordinator!
             .regFieldToggleDisabled(widget.tfKey!, toggleDisabled);
         widget.formCoordinator!.regFieldSave(widget.tfKey!, saveField);
+        widget.formCoordinator!.regClearText(widget.tfKey!, clearText);
 
         if (widget.doValidate != null) {
           widget.formCoordinator!
               .regFieldValidator(widget.tfKey!, widget.doValidate!);
         }
-
         if (widget.requireUnique ?? false) {
           widget.formCoordinator!
               .regFieldCheckUnique(widget.tfKey!, checkUnique);
