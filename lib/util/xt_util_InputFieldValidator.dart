@@ -19,16 +19,22 @@ String? validateOnChanged(String? val, String regNG, String callout,
 }
 
 String? validateFullName(String? value,
-    {Map<Enum, String?>? formErrors, Enum? filedKey}) {
+    {String? emptyCallout, Map<Enum, String?>? formErrors, Enum? filedKey}) {
   RegExp regex = RegExp(glb_reg_fullName);
 
   String? result;
 
   if (value == null) {
     result = 'Please enter your full name';
+    if (emptyCallout != null) {
+      result = emptyCallout;
+    }
   } else {
     if (value.isEmpty) {
       result = 'Please enter your full name';
+      if (emptyCallout != null) {
+        result = emptyCallout;
+      }
     } else {
       if (!regex.hasMatch(value)) {
         result = glb_fullName_callout;
@@ -71,14 +77,23 @@ String? validateUsername(String? value,
   return result;
 }
 
-String? validateEmail(String? value) {
+String? validateEmail(String? value, {String? emptyCallout}) {
   String? result;
   RegExp regex = RegExp(glb_reg_email);
 
-  if (value == null) return 'Please enter email';
+  if (value == null) {
+    result = 'Please enter email';
+    if (emptyCallout != null) {
+      result = emptyCallout;
+    }
+    return result;
+  }
 
   if (value.isEmpty) {
     result = "Your email is required";
+    if (emptyCallout != null) {
+      result = emptyCallout;
+    }
   } else {
     if (!regex.hasMatch(value)) {
       result = glb_email_callout;
@@ -90,15 +105,21 @@ String? validateEmail(String? value) {
 }
 
 String? validatePhone(String? value,
-    {Map<Enum, String?>? formErrors, Enum? filedKey}) {
+    {String? emptyCallout, Map<Enum, String?>? formErrors, Enum? filedKey}) {
   final phoneRegExp = RegExp(glb_reg_phone);
 
   String? result;
   if (value == null) {
     result = 'Please enter phone number';
+    if (emptyCallout != null) {
+      result = emptyCallout;
+    }
   } else {
     if (value.isEmpty) {
       result = 'Please enter phone number';
+      if (emptyCallout != null) {
+        result = emptyCallout;
+      }
     } else {
       if (!phoneRegExp.hasMatch(value)) {
         result = glb_phone_callout;
