@@ -9,12 +9,14 @@ environment:
   # flutter: ">=1.17.0"
 
 dependencies:
+  fl_chart: ^0.63.0
   flutter:
     sdk: flutter
     
   go_router: ^6.2.0  
   loading_animation_widget: ^1.2.0+4
-
+  xt_util: 
+    path: ../pkg_xt_util
 dev_dependencies:
   flutter_test:
     sdk: flutter
