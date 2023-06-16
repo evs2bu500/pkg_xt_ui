@@ -15,12 +15,15 @@ dependencies:
     
   go_router: ^6.2.0  
   loading_animation_widget: ^1.2.0+4
-  xt_util: 
-    path: ../pkg_xt_util
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  xt_util: 
+    # path: ../pkg_xt_util
+    git:
+      url: https://github.com/evs2bu500/pkg_xt_util.git
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
