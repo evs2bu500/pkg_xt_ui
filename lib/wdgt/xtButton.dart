@@ -26,7 +26,7 @@ class xtButton extends StatefulWidget {
   }) : super(key: key);
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool? outlined;
   final Color? outlineColor;
   final Color? color;
