@@ -1,6 +1,5 @@
 import 'dart:math';
 
-// import 'package:evs2op/ext/fl_chart/resources/app_resources.dart';
 import 'package:xt_util/xt_util.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +19,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.border,
     this.reservedSizeLeft,
     this.rereservedSizeBottom,
+    this.tooltipTimeFormat,
     // this.width,
     this.ratio,
     this.title,
@@ -68,13 +68,14 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Color bottomTextColor;
   final Color bottomTouchedTextColor;
   final Border? border;
+  final String? tooltipTimeFormat;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
 }
 
 class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
-  late double touchedValue;
+  late double _touchedValue;
 
   final Duration animDuration = const Duration(milliseconds: 200);
 
@@ -93,6 +94,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   int dataLength = 0;
   double _maxY = 0;
+  double _yGridFactor = 1;
   // List<String> _yTitles = [];
   int yAxisTitleCount = 5;
   // int _prevYAxisTitleIndex = -1;
@@ -134,7 +136,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    final isTouched = value == touchedValue;
+    final isTouched = value == _touchedValue;
     final style = TextStyle(
       color: isTouched ? widget.bottomTouchedTextColor : widget.bottomTextColor,
       // fontWeight: FontWeight.bold,
@@ -201,8 +203,8 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   Color? setBarColor(int i, int touchedValue) {
     if (i == dataLength - touchedValue - 1) {
-      // return widget.tooltipBackgroundColor;
-      return widget.highlightColor; //Colors.white;
+      return widget.tooltipBackgroundColor;
+      // return widget.highlightColor; //Colors.white;
     }
 
     return widget.barColor.withOpacity(0.62);
@@ -225,6 +227,24 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       yValues.add(double.parse(widget.historyData[i][widget.valKey]));
     }
     _maxY = findMax(yValues);
+
+    //_maxY = 0.3, _yGridFactor = 10, _maxY = 0.03, _yGridFactor = 100
+    _yGridFactor = 1;
+    if (_maxY > 0.1) {
+      _yGridFactor = 10;
+    }
+    if (_maxY > 1) {
+      _yGridFactor = 100;
+    }
+    if (_maxY > 10) {
+      _yGridFactor = 1000;
+    }
+    if (_maxY > 100) {
+      _yGridFactor = 10000;
+    }
+    if (_maxY > 1000) {
+      _yGridFactor = 100000;
+    }
 
     _timeStampEnd = _chartData[0].x.toInt();
     _timeStampStart = _chartData[dataLength - 1].x.toInt();
@@ -300,7 +320,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     // _containHighlight = false;
     // _highlightedBarGroups = getData(0);
 
-    touchedValue = -1;
+    _touchedValue = -1;
   }
 
   @override
@@ -331,7 +351,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                   0.85 * (constraints.maxWidth - wAdj) / dataLength;
 
               _barWidth = barsWidth;
-              _barGroups = getBars(-1);
+              _barGroups = getBars(_touchedValue.toInt());
 
               return BarChart(
                 BarChartData(
@@ -345,19 +365,20 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                       if (!event.isInterestedForInteractions ||
                           barTouchResponse == null ||
                           barTouchResponse.spot == null) {
-                        touchedValue = -1;
-                        // setState(() {
-                        // _containHighlight = false;
-                        // _barGroups = getBars(-1);
-                        // });
+                        _touchedValue = -1;
+                        setState(() {
+                          // _containHighlight = false;
+                          _barGroups = getBars(-1);
+                        });
                         return;
                       }
-                      touchedValue = barTouchResponse.spot!.touchedBarGroupIndex
+                      _touchedValue = barTouchResponse
+                          .spot!.touchedBarGroupIndex
                           .toDouble();
 
                       setState(() {
                         // _containHighlight = true;
-                        _barGroups = getBars(touchedValue.toInt());
+                        _barGroups = getBars(_touchedValue.toInt());
                       });
                       // print('touch');
                     },
@@ -397,7 +418,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                             DateTime.fromMicrosecondsSinceEpoch(
                                     group.x.toInt() * 1000)
                                 .toString(),
-                            format: 'MM-dd HH:mm');
+                            format: widget.tooltipTimeFormat ?? 'MM-dd HH:mm');
 
                         String yText = rod.toY.toStringAsFixed(
                             widget.toolTipDecimal ?? widget.yDecimal);
@@ -432,10 +453,10 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                   ),
                   titlesData: FlTitlesData(
                     show: true,
-                    topTitles: AxisTitles(
+                    topTitles: const AxisTitles(
                       sideTitles: SideTitles(showTitles: false),
                     ),
-                    rightTitles: AxisTitles(
+                    rightTitles: const AxisTitles(
                       sideTitles: SideTitles(showTitles: false),
                     ),
                     leftTitles: AxisTitles(
@@ -470,29 +491,32 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                     show: true,
                     drawHorizontalLine: true,
                     drawVerticalLine: true,
-                    checkToShowHorizontalLine: (value) => value % 1 == 0,
+                    checkToShowHorizontalLine: (value) =>
+                        value * _yGridFactor % 1 == 0,
                     checkToShowVerticalLine: (value) => value % 1 == 0,
                     getDrawingHorizontalLine: (value) {
                       if (value == 0) {
-                        return FlLine(
+                        return const FlLine(
                           color: AppColors.contentColorOrange,
                           strokeWidth: 2,
                         );
                       } else {
                         return FlLine(
-                          color: AppColors.mainGridLineColor,
+                          color: Theme.of(context)
+                              .hintColor
+                              .withOpacity(0.2), //AppColors.mainGridLineColor,
                           strokeWidth: 0.5,
                         );
                       }
                     },
                     getDrawingVerticalLine: (value) {
                       if (value == 0) {
-                        return FlLine(
+                        return const FlLine(
                           color: Colors.redAccent,
                           strokeWidth: 10,
                         );
                       } else {
-                        return FlLine(
+                        return const FlLine(
                           color: AppColors.mainGridLineColor,
                           strokeWidth: 0.5,
                         );
