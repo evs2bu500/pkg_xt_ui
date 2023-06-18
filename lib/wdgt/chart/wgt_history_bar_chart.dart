@@ -20,7 +20,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.reservedSizeLeft,
     this.rereservedSizeBottom,
     this.tooltipTimeFormat,
-    // this.width,
+    this.xTimeFormat,
     this.ratio,
     this.title,
     this.showTitle = true,
@@ -69,6 +69,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Color bottomTouchedTextColor;
   final Border? border;
   final String? tooltipTimeFormat;
+  final String? xTimeFormat;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -158,7 +159,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     // }
     xTitle = getDateFromDateTimeStr(
         DateTime.fromMillisecondsSinceEpoch(value.toInt()).toString(),
-        format: "MM-dd");
+        format: widget.xTimeFormat ?? "MM-dd");
 
     return SideTitleWidget(
       space: 16,
@@ -372,14 +373,16 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                         });
                         return;
                       }
-                      _touchedValue = barTouchResponse
-                          .spot!.touchedBarGroupIndex
-                          .toDouble();
-
                       setState(() {
-                        // _containHighlight = true;
-                        _barGroups = getBars(_touchedValue.toInt());
+                        _touchedValue = barTouchResponse
+                            .spot!.touchedBarGroupIndex
+                            .toDouble();
                       });
+
+                      // setState(() {
+                      // _containHighlight = true;
+                      // _barGroups = getBars(_touchedValue.toInt());
+                      // });
                       // print('touch');
                     },
                     touchTooltipData: BarTouchTooltipData(

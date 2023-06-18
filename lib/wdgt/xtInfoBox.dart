@@ -59,8 +59,8 @@ class xtInfoBox extends StatelessWidget {
           //             color: textColor ?? Colors.white,
           //             fontSize: 17,
           //             fontStyle: FontStyle.normal)),
-          RichText(
-            text: TextSpan(
+          SelectableText.rich(
+            TextSpan(
               children: [
                 TextSpan(text: text ?? '', style: textStyle),
                 superText != null
@@ -77,6 +77,7 @@ class xtInfoBox extends StatelessWidget {
                     : const TextSpan(),
               ],
             ),
+            maxLines: 1,
           )
         ],
       ),

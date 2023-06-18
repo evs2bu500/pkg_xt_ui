@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 const Widget horizontalSpaceTiny = SizedBox(width: 5.0);
@@ -43,6 +44,8 @@ Offset? getPos(GlobalKey key) {
   if (box == null) return null;
 
   Offset pos = box.localToGlobal(Offset.zero);
-  print("pos:$pos");
+  if (kDebugMode) {
+    print("pos:$pos");
+  }
   return pos;
 }
