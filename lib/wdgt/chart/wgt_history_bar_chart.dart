@@ -21,6 +21,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.rereservedSizeBottom,
     this.tooltipTimeFormat,
     this.xTimeFormat,
+    this.skipOddXTitle = false,
     this.ratio,
     this.title,
     this.showTitle = true,
@@ -70,6 +71,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Border? border;
   final String? tooltipTimeFormat;
   final String? xTimeFormat;
+  final bool skipOddXTitle;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -86,7 +88,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   bool _errorToolTip = false;
 
   //check the max value of the list
-  // List<Map<String, int>> _xTitles = [];
+  List<Map<String, int>> _xTitles = [];
   // int _xDominantInterval = 0;
   // double _xInterval = 0;
   // int _xTitleCount = 8;
@@ -94,6 +96,8 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   // int _xTitleInterval = 0;
 
   int dataLength = 0;
+  double _maxX = 0;
+  double _xInterval = 1;
   double _maxY = 0;
   double _yGridFactor = 1;
   // List<String> _yTitles = [];
@@ -146,6 +150,18 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
     if (value.toInt() ==
         _timeStampStart /* || value.toInt() == _timeStampEnd*/) {
+      return Container();
+    }
+
+    //find the index of the value in the xTitles
+    int index = -1;
+    for (var i = 0; i < _xTitles.length; i++) {
+      if (double.parse(_xTitles[i].keys.first).toInt() == value.toInt()) {
+        index = i;
+        break;
+      }
+    }
+    if (index > 0 && (widget.skipOddXTitle) && index % 2 == 1) {
       return Container();
     }
 
@@ -228,27 +244,28 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       yValues.add(double.parse(widget.historyData[i][widget.valKey]));
     }
     _maxY = findMax(yValues);
-
     //_maxY = 0.3, _yGridFactor = 10, _maxY = 0.03, _yGridFactor = 100
     _yGridFactor = 1;
     if (_maxY > 0.1) {
       _yGridFactor = 10;
-    }
-    if (_maxY > 1) {
+    } else if (_maxY > 0.01) {
       _yGridFactor = 100;
-    }
-    if (_maxY > 10) {
+    } else if (_maxY > 0.001) {
       _yGridFactor = 1000;
-    }
-    if (_maxY > 100) {
+    } else if (_maxY > 0.0001) {
       _yGridFactor = 10000;
-    }
-    if (_maxY > 1000) {
+    } else if (_maxY > 0.00001) {
       _yGridFactor = 100000;
     }
 
     _timeStampEnd = _chartData[0].x.toInt();
     _timeStampStart = _chartData[dataLength - 1].x.toInt();
+
+    //building xTitles
+    _xTitles = [];
+    for (var i = 0; i < dataLength; i++) {
+      _xTitles.add(Map.of({_chartData[i].x.toString(): 0}));
+    }
 
     //calculate the interval between two x axis titles
     // int xIntervalHalfHours = 2;
@@ -474,7 +491,9 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                         showTitles: true,
                         reservedSize: widget.rereservedSizeBottom ?? 40,
                         getTitlesWidget: bottomTitles,
-                        interval: -5, //_xInterval * 1,
+                        // for bar chart, maxX is hard coded to 1
+                        // interval is ignored
+                        interval: 1,
                       ),
                     ),
                   ),
