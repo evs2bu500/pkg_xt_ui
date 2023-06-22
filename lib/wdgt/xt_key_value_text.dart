@@ -59,7 +59,7 @@ class xtKeyValueText extends StatelessWidget {
       // strutStyle: null,
       // textWidthBasis: null,
       // textHeightBehavior: null,
-      // maxLines: 1,
+      maxLines: 1,
       // semanticsLabel: null,
     );
   }
