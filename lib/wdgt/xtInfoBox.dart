@@ -19,6 +19,7 @@ class xtInfoBox extends StatelessWidget {
     this.padding,
     this.superText,
     this.superTextStyle,
+    this.isSelectable,
   }) : super(key: key);
 
   final Icon? icon;
@@ -35,6 +36,7 @@ class xtInfoBox extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final String? superText;
   final TextStyle? superTextStyle;
+  final bool? isSelectable;
 
   @override
   Widget build(BuildContext context) {
@@ -59,28 +61,40 @@ class xtInfoBox extends StatelessWidget {
           //             color: textColor ?? Colors.white,
           //             fontSize: 17,
           //             fontStyle: FontStyle.normal)),
-          SelectableText.rich(
-            TextSpan(
-              children: [
-                TextSpan(text: text ?? '', style: textStyle),
-                superText != null
-                    ? WidgetSpan(
-                        child: Transform.translate(
-                          offset: const Offset(2.0, -13.0),
-                          child: Text(
-                            superText!,
-                            style:
-                                superTextStyle ?? const TextStyle(fontSize: 10),
-                          ),
-                        ),
-                      )
-                    : const TextSpan(),
-              ],
-            ),
-            maxLines: 1,
-          )
+          isSelectable ?? true
+              ? getConent()
+              : Text(
+                  text ?? '',
+                  style: textStyle ??
+                      TextStyle(
+                          color: textColor ?? Colors.white,
+                          fontSize: 17,
+                          fontStyle: FontStyle.normal),
+                )
         ],
       ),
+    );
+  }
+
+  Widget getConent() {
+    return SelectableText.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: text ?? '', style: textStyle),
+          superText != null
+              ? WidgetSpan(
+                  child: Transform.translate(
+                    offset: const Offset(2.0, -13.0),
+                    child: Text(
+                      superText!,
+                      style: superTextStyle ?? const TextStyle(fontSize: 10),
+                    ),
+                  ),
+                )
+              : const TextSpan(),
+        ],
+      ),
+      maxLines: 1,
     );
   }
 }
