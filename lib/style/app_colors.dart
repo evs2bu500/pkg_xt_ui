@@ -65,6 +65,20 @@ class AppColors {
   // static const Color contentColorDarkLightRed = Color(0xFFFF6347);
   // static const Color contentColorDarkLightCyan = Color(0xFFE0FFFF);
   // static const Color contentColorDarkLightGrey = Color(0xFFD3D3D3);
+  static const List<Color> tier1colorsAlt = [
+    contentColorCyan,
+    contentColorLightPink,
+    contentColorOrange,
+    contentColorPink,
+    contentColorMagneta,
+    // contentColorPink,
+    contentColorYellow,
+    contentColorBlue,
+    // contentColorOrange,
+    contentColorRed,
+    contentColorGreen,
+    contentColorPurple,
+  ];
 
   static const List<Color> tier1colors = [
     contentColorRed,
