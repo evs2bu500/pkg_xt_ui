@@ -29,6 +29,7 @@ class xtKeyValueText extends StatelessWidget {
   Widget build(BuildContext context) {
     return selectable == null || !selectable!
         ? Row(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
