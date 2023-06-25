@@ -13,6 +13,12 @@ class xtWait extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget wait;
     switch (anim) {
+      case 'beat':
+        wait = LoadingAnimationWidget.beat(
+          color: color ?? xtLightGreen1,
+          size: size ?? 21,
+        );
+        break;
       case 'horizontalRotatingDots':
         wait = LoadingAnimationWidget.horizontalRotatingDots(
           color: color ?? xtLightGreen1,
