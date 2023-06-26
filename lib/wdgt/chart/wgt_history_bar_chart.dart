@@ -148,8 +148,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       fontSize: 13,
     );
 
-    if (value.toInt() ==
-        _timeStampStart /* || value.toInt() == _timeStampEnd*/) {
+    if (value.toInt() == _timeStampStart || value.toInt() == _timeStampEnd) {
       return Container();
     }
 
