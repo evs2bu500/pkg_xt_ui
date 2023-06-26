@@ -32,7 +32,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     required this.historyData,
     required this.timeKey,
     required this.valKey,
-    required this.dominantInterval,
+    this.dominantInterval,
     required this.yDecimal,
   })  : barColor = barColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
@@ -49,7 +49,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final List<Map<String, dynamic>> historyData;
   final String timeKey;
   final String valKey;
-  final int dominantInterval;
+  final int? dominantInterval;
   final int yDecimal;
   final String yUnit;
   final int? toolTipDecimal;
