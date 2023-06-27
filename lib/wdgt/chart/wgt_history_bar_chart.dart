@@ -27,6 +27,8 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.showTitle = true,
     this.titleWidget,
     this.yUnit = '',
+    this.maxVal,
+    this.showEmptyMessage,
     this.toolTipDecimal,
     this.showMaxYValue = false,
     required this.historyData,
@@ -52,6 +54,8 @@ class WgtHistoryBarChart extends StatefulWidget {
   final int? dominantInterval;
   final int yDecimal;
   final String yUnit;
+  final double? maxVal;
+  final bool? showEmptyMessage;
   final int? toolTipDecimal;
   final bool showMaxYValue;
   final String? title;
@@ -370,181 +374,203 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
               _barWidth = barsWidth;
               _barGroups = getBars(_touchedValue.toInt());
 
-              return BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.center,
-                  groupsSpace: barsSpace, //_rodSpace,
-                  barGroups: _barGroups,
-                  //getData(barsWidth, barsSpace, -1),
-                  barTouchData: BarTouchData(
-                    enabled: true,
-                    touchCallback: (FlTouchEvent event, barTouchResponse) {
-                      if (!event.isInterestedForInteractions ||
-                          barTouchResponse == null ||
-                          barTouchResponse.spot == null) {
-                        _touchedValue = -1;
-                        setState(() {
-                          // _containHighlight = false;
-                          _barGroups = getBars(-1);
-                        });
-                        return;
-                      }
-                      setState(() {
-                        _touchedValue = barTouchResponse
-                            .spot!.touchedBarGroupIndex
-                            .toDouble();
-                      });
-
-                      // setState(() {
-                      // _containHighlight = true;
-                      // _barGroups = getBars(_touchedValue.toInt());
-                      // });
-                      // print('touch');
-                    },
-                    touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: _errorToolTip
-                          ? widget.errorTooltipBackgroundColor
-                          : widget.tooltipBackgroundColor,
-                      tooltipPadding: const EdgeInsets.all(3),
-                      tooltipMargin: 6,
-                      getTooltipItem: (
-                        BarChartGroupData group,
-                        int groupIndex,
-                        BarChartRodData rod,
-                        int rodIndex,
-                      ) {
-                        // setState(() {
-                        //   _errorToolTip = false;
-                        // });
-
-                        String errorDataText = '';
-                        if (_errorData.isNotEmpty) {
-                          // errorDataText = _errorData[rodIndex].values.first;
-                          String key = group.x.toInt().toString();
-                          Map<String, dynamic> errorData =
-                              getElementMapByKey(_errorData, key);
-                          if (errorData.isNotEmpty) {
-                            errorDataText = errorData[key];
-                            if (errorDataText.isNotEmpty) {
-                              // setState(() {
-                              _errorToolTip = true;
-                              // });
-                            }
-                          }
-                        }
-
-                        final timeText = getDateFromDateTimeStr(
-                            DateTime.fromMicrosecondsSinceEpoch(
-                                    group.x.toInt() * 1000)
-                                .toString(),
-                            format: widget.tooltipTimeFormat ?? 'MM-dd HH:mm');
-
-                        String yText = rod.toY.toStringAsFixed(
-                            widget.toolTipDecimal ?? widget.yDecimal);
-                        return BarTooltipItem(
-                          errorDataText.isEmpty
-                              ? '$yText${widget.yUnit}'
-                              : 'Error Data: $errorDataText',
-                          errorDataText.isEmpty
-                              ? TextStyle(
-                                  color: widget.tooltipTextColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13)
-                              : TextStyle(
-                                  color: Colors.red[900],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13),
-                          children: [
-                            TextSpan(
-                              text: ' $timeText',
-                              style: TextStyle(
-                                color: widget.tooltipTextColor,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 13,
-                                // fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ],
-                          textAlign: TextAlign.center,
-                        );
-                      },
-                    ),
-                  ),
-                  titlesData: FlTitlesData(
-                    show: true,
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: widget.reservedSizeLeft ?? 40,
-                        getTitlesWidget: leftTitles,
-                      ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: widget.rereservedSizeBottom ?? 40,
-                        getTitlesWidget: bottomTitles,
-                        // for bar chart, maxX is hard coded to 1
-                        // interval is ignored
-                        interval: 1,
-                      ),
-                    ),
-                  ),
-                  minY: 0,
-                  borderData: FlBorderData(
-                    show: true,
-                    border: widget.border ??
-                        Border.all(
-                          // color: AppColors.borderColor,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.33),
+              return Stack(
+                children: [
+                  if (widget.maxVal == 0 && widget.showEmptyMessage == true)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 89.0),
+                        child: Text(
+                          'zero values for the duration',
+                          style: TextStyle(
+                              fontSize: getMaxFitFontSize(
+                                  constraints.maxWidth * 0.75,
+                                  'zero values for the duration',
+                                  TextStyle(fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context)
+                                  .hintColor
+                                  .withOpacity(0.13)),
                         ),
+                      ),
+                    ),
+                  BarChart(
+                    BarChartData(
+                      alignment: BarChartAlignment.center,
+                      groupsSpace: barsSpace, //_rodSpace,
+                      barGroups: _barGroups,
+                      //getData(barsWidth, barsSpace, -1),
+                      barTouchData: BarTouchData(
+                        enabled: true,
+                        touchCallback: (FlTouchEvent event, barTouchResponse) {
+                          if (!event.isInterestedForInteractions ||
+                              barTouchResponse == null ||
+                              barTouchResponse.spot == null) {
+                            _touchedValue = -1;
+                            setState(() {
+                              // _containHighlight = false;
+                              _barGroups = getBars(-1);
+                            });
+                            return;
+                          }
+                          setState(() {
+                            _touchedValue = barTouchResponse
+                                .spot!.touchedBarGroupIndex
+                                .toDouble();
+                          });
+
+                          // setState(() {
+                          // _containHighlight = true;
+                          // _barGroups = getBars(_touchedValue.toInt());
+                          // });
+                          // print('touch');
+                        },
+                        touchTooltipData: BarTouchTooltipData(
+                          tooltipBgColor: _errorToolTip
+                              ? widget.errorTooltipBackgroundColor
+                              : widget.tooltipBackgroundColor,
+                          tooltipPadding: const EdgeInsets.all(3),
+                          tooltipMargin: 6,
+                          getTooltipItem: (
+                            BarChartGroupData group,
+                            int groupIndex,
+                            BarChartRodData rod,
+                            int rodIndex,
+                          ) {
+                            // setState(() {
+                            //   _errorToolTip = false;
+                            // });
+
+                            String errorDataText = '';
+                            if (_errorData.isNotEmpty) {
+                              // errorDataText = _errorData[rodIndex].values.first;
+                              String key = group.x.toInt().toString();
+                              Map<String, dynamic> errorData =
+                                  getElementMapByKey(_errorData, key);
+                              if (errorData.isNotEmpty) {
+                                errorDataText = errorData[key];
+                                if (errorDataText.isNotEmpty) {
+                                  // setState(() {
+                                  _errorToolTip = true;
+                                  // });
+                                }
+                              }
+                            }
+
+                            final timeText = getDateFromDateTimeStr(
+                                DateTime.fromMicrosecondsSinceEpoch(
+                                        group.x.toInt() * 1000)
+                                    .toString(),
+                                format:
+                                    widget.tooltipTimeFormat ?? 'MM-dd HH:mm');
+
+                            String yText = rod.toY.toStringAsFixed(
+                                widget.toolTipDecimal ?? widget.yDecimal);
+                            return BarTooltipItem(
+                              errorDataText.isEmpty
+                                  ? '$yText${widget.yUnit}'
+                                  : 'Error Data: $errorDataText',
+                              errorDataText.isEmpty
+                                  ? TextStyle(
+                                      color: widget.tooltipTextColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13)
+                                  : TextStyle(
+                                      color: Colors.red[900],
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13),
+                              children: [
+                                TextSpan(
+                                  text: ' $timeText',
+                                  style: TextStyle(
+                                    color: widget.tooltipTextColor,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 13,
+                                    // fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ],
+                              textAlign: TextAlign.center,
+                            );
+                          },
+                        ),
+                      ),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: widget.reservedSizeLeft ?? 40,
+                            getTitlesWidget: leftTitles,
+                          ),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: widget.rereservedSizeBottom ?? 40,
+                            getTitlesWidget: bottomTitles,
+                            // for bar chart, maxX is hard coded to 1
+                            // interval is ignored
+                            interval: 1,
+                          ),
+                        ),
+                      ),
+                      minY: 0,
+                      borderData: FlBorderData(
+                        show: true,
+                        border: widget.border ??
+                            Border.all(
+                              // color: AppColors.borderColor,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.33),
+                            ),
+                      ),
+                      gridData: FlGridData(
+                        show: true,
+                        drawHorizontalLine: true,
+                        drawVerticalLine: true,
+                        checkToShowHorizontalLine: (value) =>
+                            value * _yGridFactor % 1 == 0,
+                        checkToShowVerticalLine: (value) => value % 1 == 0,
+                        getDrawingHorizontalLine: (value) {
+                          if (value == 0) {
+                            return const FlLine(
+                              color: AppColors.contentColorOrange,
+                              strokeWidth: 2,
+                            );
+                          } else {
+                            return FlLine(
+                              color: Theme.of(context).hintColor.withOpacity(
+                                  0.2), //AppColors.mainGridLineColor,
+                              strokeWidth: 0.5,
+                            );
+                          }
+                        },
+                        getDrawingVerticalLine: (value) {
+                          if (value == 0) {
+                            return const FlLine(
+                              color: Colors.redAccent,
+                              strokeWidth: 10,
+                            );
+                          } else {
+                            return const FlLine(
+                              color: AppColors.mainGridLineColor,
+                              strokeWidth: 0.5,
+                            );
+                          }
+                        },
+                      ),
+                    ),
                   ),
-                  gridData: FlGridData(
-                    show: true,
-                    drawHorizontalLine: true,
-                    drawVerticalLine: true,
-                    checkToShowHorizontalLine: (value) =>
-                        value * _yGridFactor % 1 == 0,
-                    checkToShowVerticalLine: (value) => value % 1 == 0,
-                    getDrawingHorizontalLine: (value) {
-                      if (value == 0) {
-                        return const FlLine(
-                          color: AppColors.contentColorOrange,
-                          strokeWidth: 2,
-                        );
-                      } else {
-                        return FlLine(
-                          color: Theme.of(context)
-                              .hintColor
-                              .withOpacity(0.2), //AppColors.mainGridLineColor,
-                          strokeWidth: 0.5,
-                        );
-                      }
-                    },
-                    getDrawingVerticalLine: (value) {
-                      if (value == 0) {
-                        return const FlLine(
-                          color: Colors.redAccent,
-                          strokeWidth: 10,
-                        );
-                      } else {
-                        return const FlLine(
-                          color: AppColors.mainGridLineColor,
-                          strokeWidth: 0.5,
-                        );
-                      }
-                    },
-                  ),
-                ),
+                ],
               );
             }),
           ),
