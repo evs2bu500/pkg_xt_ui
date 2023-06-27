@@ -386,7 +386,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                               fontSize: getMaxFitFontSize(
                                   constraints.maxWidth * 0.75,
                                   'zero values for the duration',
-                                  TextStyle(fontWeight: FontWeight.bold)),
+                                  const TextStyle(fontWeight: FontWeight.bold)),
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context)
                                   .hintColor
