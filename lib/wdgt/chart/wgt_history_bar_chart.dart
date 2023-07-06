@@ -22,6 +22,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.tooltipTimeFormat,
     this.xTimeFormat,
     this.skipOddXTitle = false,
+    this.skipInterval,
     this.ratio,
     this.title,
     this.showTitle = true,
@@ -76,6 +77,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final String? tooltipTimeFormat;
   final String? xTimeFormat;
   final bool skipOddXTitle;
+  final int? skipInterval;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -164,8 +166,16 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
         break;
       }
     }
-    if (index > 0 && (widget.skipOddXTitle) && index % 2 == 1) {
-      return Container();
+    if (widget.skipInterval != null) {
+      if (widget.skipInterval! > 2) {
+        if (index > 0 && index % widget.skipInterval! != 0) {
+          return Container();
+        }
+      }
+    } else {
+      if (index > 0 && (widget.skipOddXTitle) && index % 2 == 1) {
+        return Container();
+      }
     }
 
     String xTitle = "";
