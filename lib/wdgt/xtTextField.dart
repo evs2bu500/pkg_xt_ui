@@ -298,7 +298,7 @@ class _xtTextFieldState extends State<xtTextField> {
 }
 
 class _txTextField extends StatelessWidget {
-  _txTextField({
+  const _txTextField({
     Key? key,
     required this.controller,
     required this.onTap,
@@ -330,19 +330,16 @@ class _txTextField extends StatelessWidget {
     if (controller.text.isEmpty && initialText != null) {
       controller.text = initialText!;
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: TextField(
-        controller: controller,
-        onTap: onTap,
-        onChanged: onChanged,
-        decoration: decoration,
-        obscureText: obscureText ?? false,
-        maxLength: maxLength,
-        enabled: !(disabled ?? false),
-        inputFormatters: inputFormatters,
-        // buildInputDecoration(hintText, errorText, errorColor, icon, suffix),
-      ),
+    return TextField(
+      controller: controller,
+      onTap: onTap,
+      onChanged: onChanged,
+      decoration: decoration,
+      obscureText: obscureText ?? false,
+      maxLength: maxLength,
+      enabled: !(disabled ?? false),
+      inputFormatters: inputFormatters,
+      // buildInputDecoration(hintText, errorText, errorColor, icon, suffix),
     );
   }
 }
@@ -384,6 +381,6 @@ Widget txTextInputSuffix(String? type, Color? color) {
         ),
       );
     default:
-      return SizedBox(height: 1, width: 1);
+      return const SizedBox.shrink();
   }
 }
