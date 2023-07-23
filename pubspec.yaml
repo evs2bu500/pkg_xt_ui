@@ -1,6 +1,6 @@
 name: xt_ui
 description: xt_ui package project.
-version: 1.0.2
+version: 1.1.2
 homepage:
 
 environment:
@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
     
   # go_router: ^6.2.0  
+  flutter_svg: ^2.0.7
   loading_animation_widget: ^1.2.0+4
   
 dev_dependencies:
@@ -61,3 +62,7 @@ flutter:
   #
   # For details regarding fonts in packages, see
   # https://flutter.dev/custom-fonts/#from-packages
+
+    assets:
+    - assets/images/
+    - assets/images/cards/
