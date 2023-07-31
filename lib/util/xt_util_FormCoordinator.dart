@@ -78,7 +78,7 @@ class xt_util_FormCorrdinator {
     for (Enum key in fieldValidators.keys) {
       Function? func = fieldValidators[key];
       if (func != null) {
-        String? result = func(formData[key]);
+        String? result = func(formData[key] ?? '');
         if (result != null) {
           formErrors[key] = result;
           fieldUpdateErrors[key]!(result);
