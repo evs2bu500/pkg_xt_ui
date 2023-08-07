@@ -29,6 +29,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.titleWidget,
     this.yUnit = '',
     this.maxVal,
+    this.showKonY,
     this.showEmptyMessage,
     this.toolTipDecimal,
     this.showMaxYValue = false,
@@ -56,6 +57,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final int yDecimal;
   final String yUnit;
   final double? maxVal;
+  final bool? showKonY;
   final bool? showEmptyMessage;
   final int? toolTipDecimal;
   final bool showMaxYValue;
@@ -140,7 +142,12 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       child: Text(
           // text,
           // yTitles[index],
-          value.toStringAsFixed(widget.yDecimal),
+          // value.toStringAsFixed(widget.yDecimal),
+          widget.showKonY != null
+              ? widget.showKonY!
+                  ? getK(value)
+                  : value.toStringAsFixed(widget.yDecimal)
+              : value.toStringAsFixed(widget.yDecimal),
           style: style,
           textAlign: TextAlign.center),
     );
