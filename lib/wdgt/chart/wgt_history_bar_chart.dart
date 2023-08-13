@@ -1,9 +1,8 @@
 import 'dart:math';
 
-import 'package:xt_util/xt_util.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
+import 'package:xt_util/xt_util.dart';
 import '../../style/app_colors.dart';
 
 class WgtHistoryBarChart extends StatefulWidget {

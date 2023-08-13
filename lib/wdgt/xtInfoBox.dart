@@ -22,7 +22,7 @@ class xtInfoBox extends StatelessWidget {
     this.isSelectable,
   }) : super(key: key);
 
-  final Icon? icon;
+  final Widget? icon;
   final double? iconTextPadding;
   final String? text;
   final Color? boarderColor;
