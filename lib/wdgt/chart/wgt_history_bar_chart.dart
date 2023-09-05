@@ -36,6 +36,10 @@ class WgtHistoryBarChart extends StatefulWidget {
     required this.timeKey,
     required this.valKey,
     this.dominantInterval,
+    this.altBarTip,
+    this.altBarTipKey,
+    this.altBarTipIf,
+    this.useAltBarColor,
     required this.yDecimal,
   })  : barColor = barColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
@@ -79,6 +83,10 @@ class WgtHistoryBarChart extends StatefulWidget {
   final String? xTimeFormat;
   final bool skipOddXTitle;
   final int? skipInterval;
+  final String? altBarTipKey;
+  final String? altBarTip;
+  final Function? altBarTipIf;
+  final bool? useAltBarColor;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -120,6 +128,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   List<FlSpot> _chartData = [];
   List<Map<String, dynamic>> _errorData = [];
+  List<Map<String, dynamic>> _altBarTipData = [];
 
   Widget leftTitles(double value, TitleMeta meta) {
     double max = meta.max;
@@ -237,13 +246,46 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     ];
   }
 
+  List<FlSpot> genHistoryChartData(
+      List<Map<String, dynamic>> historyData, String timeKey, String valKey,
+      {List<Map<String, dynamic>>? errorData,
+      List<Map<String, dynamic>>? altBarTipData}) {
+    List<FlSpot> chartData = [];
+
+    for (var historyDataItem in historyData) {
+      int timestamp =
+          DateTime.parse(historyDataItem[timeKey]).millisecondsSinceEpoch;
+      chartData.add(
+          FlSpot(timestamp.toDouble(), double.parse(historyDataItem[valKey])));
+      if (errorData != null) {
+        if (historyDataItem['error_data'] != null) {
+          errorData.add({timestamp.toString(): historyDataItem['error_data']});
+        }
+      }
+      if (altBarTipData != null && widget.altBarTipKey != null) {
+        if (historyDataItem[widget.altBarTipKey] != null) {
+          altBarTipData.add(
+              {timestamp.toString(): historyDataItem[widget.altBarTipKey]});
+        }
+      }
+    }
+    return chartData;
+  }
+
   Color? setBarColor(int i, int touchedValue) {
     if (i == dataLength - touchedValue - 1) {
       return widget.tooltipBackgroundColor;
       // return widget.highlightColor; //Colors.white;
     }
+    Color barColor = widget.barColor.withOpacity(0.67);
 
-    return widget.barColor.withOpacity(0.62);
+    return widget.useAltBarColor ?? false
+        ? widget.altBarTipIf != null
+            ? widget.altBarTipIf!(_altBarTipData[i].values.first)
+                ? widget.barColor.withOpacity(0.5)
+                : barColor
+            : barColor
+        : barColor;
   }
 
   @override
@@ -252,7 +294,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
     _chartData = genHistoryChartData(
         widget.historyData, widget.timeKey, widget.valKey,
-        errorData: _errorData);
+        errorData: _errorData, altBarTipData: _altBarTipData);
 
     // _chartWidth = widget.width ?? 900; //0.8 * MediaQuery.of(context).size.width;
 
@@ -472,6 +514,15 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                                 }
                               }
                             }
+                            String altBarTipValue = '';
+                            if (_altBarTipData.isNotEmpty) {
+                              String key = group.x.toInt().toString();
+                              Map<String, dynamic> altBarTip =
+                                  getElementMapByKey(_altBarTipData, key);
+                              if (altBarTip.isNotEmpty) {
+                                altBarTipValue = altBarTip[key];
+                              }
+                            }
 
                             final timeText = getDateFromDateTimeStr(
                                 DateTime.fromMicrosecondsSinceEpoch(
@@ -483,9 +534,15 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                             String yText = rod.toY.toStringAsFixed(
                                 widget.toolTipDecimal ?? widget.yDecimal);
                             return BarTooltipItem(
-                              errorDataText.isEmpty
-                                  ? '$yText${widget.yUnit}'
-                                  : 'Error Data: $errorDataText',
+                              errorDataText.isNotEmpty
+                                  ? 'Error Data: $errorDataText'
+                                  : altBarTipValue.isNotEmpty
+                                      ? widget.altBarTipIf != null
+                                          ? widget.altBarTipIf!(altBarTipValue)
+                                              ? widget.altBarTip ?? ''
+                                              : '$yText${widget.yUnit}'
+                                          : '$yText${widget.yUnit}'
+                                      : '$yText${widget.yUnit}',
                               errorDataText.isEmpty
                                   ? TextStyle(
                                       color: widget.tooltipTextColor,
@@ -594,23 +651,4 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       ],
     );
   }
-}
-
-List<FlSpot> genHistoryChartData(
-    List<Map<String, dynamic>> historyData, String timeKey, String valKey,
-    {List<Map<String, dynamic>>? errorData}) {
-  List<FlSpot> chartData = [];
-
-  for (var historyDataItem in historyData) {
-    int timestamp =
-        DateTime.parse(historyDataItem[timeKey]).millisecondsSinceEpoch;
-    chartData.add(
-        FlSpot(timestamp.toDouble(), double.parse(historyDataItem[valKey])));
-    if (errorData != null) {
-      if (historyDataItem['error_data'] != null) {
-        errorData.add({timestamp.toString(): historyDataItem['error_data']});
-      }
-    }
-  }
-  return chartData;
 }
