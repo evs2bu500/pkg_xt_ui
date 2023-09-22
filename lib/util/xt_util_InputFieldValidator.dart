@@ -52,7 +52,9 @@ String? validateFullName(String? value,
 }
 
 String? validateUsername(String? value,
-    {Map<Enum, String?>? formErrors, Enum? filedKey}) {
+    {Map<Enum, String?>? formErrors,
+    Enum? filedKey,
+    Function? additonalValidator}) {
   RegExp regex = RegExp(glb_reg_loginName);
 
   String? result;
@@ -68,6 +70,11 @@ String? validateUsername(String? value,
       } else {
         result = null;
       }
+    }
+  }
+  if (result == null) {
+    if (additonalValidator != null) {
+      result = additonalValidator(value);
     }
   }
 
