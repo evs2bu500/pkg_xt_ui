@@ -40,6 +40,9 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.altBarTipKey,
     this.altBarTipIf,
     this.useAltBarColor,
+    this.altBarColorIf,
+    this.prefixLabelIf,
+    this.prefixLabel,
     required this.yDecimal,
   })  : barColor = barColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
@@ -87,6 +90,9 @@ class WgtHistoryBarChart extends StatefulWidget {
   final String? altBarTip;
   final Function? altBarTipIf;
   final bool? useAltBarColor;
+  final Function? altBarColorIf;
+  final Function? prefixLabelIf;
+  final String? prefixLabel;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -273,6 +279,12 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   }
 
   Color? setBarColor(int i, int touchedValue) {
+    if (widget.altBarColorIf != null) {
+      if (widget.altBarColorIf!(i, widget.historyData[i])) {
+        return widget.barColor.withOpacity(0.5);
+      }
+    }
+
     if (i == dataLength - touchedValue - 1) {
       return widget.tooltipBackgroundColor;
       // return widget.highlightColor; //Colors.white;
@@ -533,6 +545,19 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
                             String yText = rod.toY.toStringAsFixed(
                                 widget.toolTipDecimal ?? widget.yDecimal);
+
+                            if (widget.prefixLabelIf != null) {
+                              // String key = group.x.toInt().toString();
+                              int index = _chartData.indexWhere((element) =>
+                                  element.x.toInt() == group.x.toInt());
+                              if (index != -1) {
+                                if (widget.prefixLabelIf!(
+                                    index, widget.historyData[index])) {
+                                  yText = '${widget.prefixLabel ?? ''}$yText';
+                                }
+                              }
+                            }
+
                             return BarTooltipItem(
                               errorDataText.isNotEmpty
                                   ? 'Error Data: $errorDataText'
