@@ -10,6 +10,7 @@ class xtTextField extends StatefulWidget {
       this.decoration,
       this.onTap,
       this.onChanged,
+      this.onEditingComplete,
       this.obscureText,
       this.doValidate,
       this.requireUnique,
@@ -34,6 +35,7 @@ class xtTextField extends StatefulWidget {
 
   void Function()? onTap;
   String? Function(String)? onChanged;
+  void Function()? onEditingComplete;
   String? Function(String)? doValidate;
   Enum? tfKey;
   // FormProvider? formProvider;
@@ -157,6 +159,7 @@ class _xtTextFieldState extends State<xtTextField> {
           decoration: decoration,
           onTap: widget.onTap,
           onChanged: widget.onChanged,
+          onEditingComplete: widget.onEditingComplete,
           doValidate: widget.doValidate,
           obscureText: widget.obscureText,
           disabled: _disabled,
@@ -303,6 +306,7 @@ class _txTextField extends StatelessWidget {
     required this.controller,
     required this.onTap,
     required this.onChanged,
+    required this.onEditingComplete,
     required this.doValidate,
     required this.decoration,
     required this.obscureText,
@@ -321,6 +325,7 @@ class _txTextField extends StatelessWidget {
 
   final void Function()? onTap;
   final void Function(String)? onChanged;
+  final void Function()? onEditingComplete;
   final String? Function(String)? doValidate;
   final String? initialText;
   final List<TextInputFormatter>? inputFormatters;
@@ -334,6 +339,7 @@ class _txTextField extends StatelessWidget {
       controller: controller,
       onTap: onTap,
       onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
       decoration: decoration,
       obscureText: obscureText ?? false,
       maxLength: maxLength,
