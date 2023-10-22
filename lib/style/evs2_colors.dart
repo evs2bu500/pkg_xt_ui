@@ -7,3 +7,5 @@ const Color evs2NTUred = Color(0xffe01932);
 const Color evs2NTUyellow = Color(0xffe6ab39);
 
 const Color evs2SUTDwhite = Color(0xffffffff);
+
+final Color commitColor = Colors.amber.shade900.withOpacity(0.95);
