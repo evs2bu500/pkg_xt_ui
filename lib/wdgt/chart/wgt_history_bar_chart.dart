@@ -15,6 +15,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     Color? highlightColor,
     Color? bottomTextColor,
     Color? bottomTouchedTextColor,
+    this.chartKey,
     this.border,
     this.reservedSizeLeft,
     this.rereservedSizeBottom,
@@ -93,12 +94,14 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Function? altBarColorIf;
   final Function? prefixLabelIf;
   final String? prefixLabel;
+  final UniqueKey? chartKey;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
 }
 
 class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
+  UniqueKey? _chartKey;
   late double _touchedValue;
 
   final Duration animDuration = const Duration(milliseconds: 200);
@@ -300,10 +303,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
         : barColor;
   }
 
-  @override
-  void initState() {
-    super.initState();
-
+  void _loadChartData() {
     _chartData = genHistoryChartData(
         widget.historyData, widget.timeKey, widget.valKey,
         errorData: _errorData, altBarTipData: _altBarTipData);
@@ -339,83 +339,26 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     for (var i = 0; i < dataLength; i++) {
       _xTitles.add(Map.of({_chartData[i].x.toString(): 0}));
     }
-
-    //calculate the interval between two x axis titles
-    // int xIntervalHalfHours = 2;
-    // if (dataLength > 24) {
-    //   xIntervalHalfHours = (dataLength / 12).round();
-    // }
-    // _xInterval = xIntervalHalfHours * widget.dominantInterval.toDouble();
-
-    // _xTitleCount = 8;
-    // _xSpan = _timeStampEnd - _timeStampStart;
-    // _xTitleInterval = (_xSpan / _xTitleCount).round();
-    // for (var i = 0; i < _xTitleCount; i++) {
-    //   int xTitleTimeStamp = _timeStampStart + _xTitleInterval * i;
-    //   final dateTime = DateTime.fromMillisecondsSinceEpoch(xTitleTimeStamp);
-    //   int hour = dateTime.hour;
-    //   int minute = dateTime.minute;
-    //   String xTitle = "";
-
-    //   //check if the minute is close to 0 or 30
-    //   if (minute < 15) {
-    //     minute = 0;
-    //   } else if (minute < 45) {
-    //     minute = 30;
-    //   } else {
-    //     minute = 0;
-    //     hour += 1;
-    //   }
-    //   DateTime roundedDateTime = DateTime(
-    //     dateTime.year,
-    //     dateTime.month,
-    //     dateTime.day,
-    //     hour,
-    //     minute,
-    //   );
-
-    //   xTitle = dateFormat.format(roundedDateTime);
-
-    //if the xTitle is the same as the previous one, skip it
-    //   if (xTitles.isNotEmpty && xTitle == xTitles[xTitles.length - 1]) {
-    //     continue;
-    //   }
-    //   xTitles.add(Map.of({xTitle: 0}));
-    // }
-
-    //find the reading timestamp that is closest to the xTitle
-    // for (Map<String, int> xTitle in xTitles) {
-    //   int xTitleTimeStamp =
-    //       dateFormat.parse(xTitle.keys.first).millisecondsSinceEpoch;
-
-    //   for (int i = 0; i < dataLength - 1; i++) {
-    //     int nextTimeStamp = _chartData[i].x.toInt();
-    //     int prevTimeStamp = _chartData[i + 1].x.toInt();
-
-    //     if (xTitleTimeStamp >= prevTimeStamp &&
-    //         xTitleTimeStamp <= nextTimeStamp) {
-    //       double gapPre = (xTitleTimeStamp - prevTimeStamp).abs().toDouble();
-    //       double gapNext = (xTitleTimeStamp - nextTimeStamp).abs().toDouble();
-    //       if (gapPre < gapNext) {
-    //         xTitle.update(xTitle.keys.first, (value) => prevTimeStamp);
-    //       } else {
-    //         xTitle.update(xTitle.keys.first, (value) => nextTimeStamp);
-    //       }
-    //       break;
-    //     }
-    //   }
-    // }
-
-    // _barGroups = getBars(-1);
-
-    // _containHighlight = false;
-    // _highlightedBarGroups = getData(0);
-
     _touchedValue = -1;
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _loadChartData();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // give the bar chart a new key to
+    // reload the chart with new data
+    if (widget.chartKey != null) {
+      if (_chartKey != widget.chartKey) {
+        _chartKey = widget.chartKey;
+        _loadChartData();
+      }
+    }
     return Column(
       children: [
         if (widget.showTitle)
@@ -443,7 +386,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
               _barWidth = barsWidth;
               _barGroups = getBars(_touchedValue.toInt());
-
+              // print(widget.key);
               return Stack(
                 children: [
                   if (widget.maxVal == 0 && widget.showEmptyMessage == true)
@@ -667,6 +610,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                         },
                       ),
                     ),
+                    // key: UniqueKey(),
                   ),
                 ],
               );
