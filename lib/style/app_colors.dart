@@ -151,4 +151,17 @@ class AppColors {
     }
     return colorList;
   }
+
+  static List<Color> getColorListBlueGreen() {
+    List<Color> colorList = [];
+    colorList = [
+      contentColorBlue,
+      contentColorGreen,
+      contentColorDarkBlue,
+      contentColorDarkGreen,
+      contentColorLightBlue,
+      contentColorLightGreen,
+    ];
+    return colorList;
+  }
 }
