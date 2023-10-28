@@ -9,6 +9,7 @@ export 'wdgt/xtWait.dart';
 export 'wdgt/xt_key_value_text.dart';
 export 'wdgt/xtInfoBox.dart';
 export 'wdgt/chart/wgt_history_bar_chart.dart';
+export 'wdgt/chart/wgt_history_line_chart.dart';
 export 'wdgt/xt_wgt_popup_button.dart';
 export 'style/xt_colors.dart';
 export 'style/app_colors.dart';
