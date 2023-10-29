@@ -79,7 +79,16 @@ class AppColors {
     contentColorGreen,
     contentColorPurple,
   ];
-
+  static const List<Color> tier1colorsGreenBlue = [
+    contentColorGreen,
+    contentColorCyan,
+    contentColorBlue,
+    contentColorLightBlue,
+    contentColorLightGreen,
+    contentColorLightCyan,
+    // contentColorDarkBlue,
+    // contentColorDarkGreen,
+  ];
   static const List<Color> tier1colors = [
     contentColorRed,
     contentColorBlue,
