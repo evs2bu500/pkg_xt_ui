@@ -8,6 +8,7 @@ export 'wdgt/xtTextField.dart';
 export 'wdgt/xtWait.dart';
 export 'wdgt/xt_key_value_text.dart';
 export 'wdgt/xtInfoBox.dart';
+export 'wdgt/chart/chart_def.dart';
 export 'wdgt/chart/wgt_history_bar_chart.dart';
 export 'wdgt/chart/wgt_history_line_chart.dart';
 export 'wdgt/xt_wgt_popup_button.dart';

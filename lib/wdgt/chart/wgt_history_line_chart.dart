@@ -20,6 +20,8 @@ class WgtHistoryLineChart extends StatefulWidget {
     required this.valKey,
     this.valUnit,
     this.interval,
+    this.xTimeFormat = 'MM-dd HH:mm',
+    this.xSpace = 0,
     this.skipInterval,
     this.skipOddXTitle = false,
     this.legend,
@@ -44,6 +46,8 @@ class WgtHistoryLineChart extends StatefulWidget {
   final bool showMinYValue;
   final int? yDecimal;
   final int? interval;
+  final double xSpace;
+  final String xTimeFormat;
   final int? skipInterval;
   final bool skipOddXTitle;
   final double? reservedSizeLeft;
@@ -171,18 +175,33 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
       }
     }
 
-    String xTitle = "";
-    xTitle = getDateTimeStrFromTimestamp(value.toInt(), format: _timeFormat);
+    // String xTitle = "";
+    // xTitle = getDateTimeStrFromTimestamp(value.toInt(), format: _timeFormat);
+    String xTitle = getDateFromDateTimeStr(
+        DateTime.fromMillisecondsSinceEpoch(value.toInt()).toString(),
+        format: widget.xTimeFormat);
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
       fitInside: _fitInsideBottomTitle
           ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0)
           : SideTitleFitInsideData.disable(),
-      space: 30,
-      angle: 4 * pi / 12,
-      child: Text(
-        xTitle,
-        style: style,
+      // space: 30,
+      // angle: 4 * pi / 12,
+      // child: Text(
+      //   xTitle,
+      //   style: style,
+      // ),
+      // angle: 4 * pi / 12,
+      child: Transform.translate(
+        offset: Offset(0, widget.xSpace),
+        child: Transform.rotate(
+          angle: 4 * pi / 12,
+          child: Text(
+            xTitle, // xTitles[value.toInt()],
+            style: style,
+          ),
+        ),
       ),
     );
   }
@@ -326,7 +345,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
         }
 
         _chartDataSets.add(LineChartBarData(
-          isCurved: true,
+          isCurved: false,
           color: color,
           barWidth: 1.5,
           isStrokeCapRound: true,

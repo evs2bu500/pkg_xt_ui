@@ -7,7 +7,8 @@ import '../../style/app_colors.dart';
 
 class WgtHistoryBarChart extends StatefulWidget {
   WgtHistoryBarChart({
-    Key? key,
+    super.key,
+    // Key? key,
     Color? barColor,
     Color? tooltipTextColor,
     Color? tooltipBackgroundColor,
@@ -15,12 +16,13 @@ class WgtHistoryBarChart extends StatefulWidget {
     Color? highlightColor,
     Color? bottomTextColor,
     Color? bottomTouchedTextColor,
-    this.chartKey,
+    // this.chartKey,
     this.border,
     this.reservedSizeLeft,
     this.rereservedSizeBottom,
     this.tooltipTimeFormat,
-    this.xTimeFormat,
+    this.xTimeFormat = 'MM-dd HH:mm',
+    this.xSpace = 8,
     this.skipOddXTitle = false,
     this.skipInterval,
     this.ratio,
@@ -36,7 +38,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     required this.historyData,
     required this.timeKey,
     required this.valKey,
-    this.dominantInterval,
+    this.dominantIntervalSecond,
     this.altBarTip,
     this.altBarTipKey,
     this.altBarTipIf,
@@ -60,7 +62,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final List<Map<String, dynamic>> historyData;
   final String timeKey;
   final String valKey;
-  final int? dominantInterval;
+  final int? dominantIntervalSecond;
   final int yDecimal;
   final String yUnit;
   final double? maxVal;
@@ -84,7 +86,8 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Color bottomTouchedTextColor;
   final Border? border;
   final String? tooltipTimeFormat;
-  final String? xTimeFormat;
+  final String xTimeFormat;
+  final double xSpace;
   final bool skipOddXTitle;
   final int? skipInterval;
   final String? altBarTipKey;
@@ -94,7 +97,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Function? altBarColorIf;
   final Function? prefixLabelIf;
   final String? prefixLabel;
-  final UniqueKey? chartKey;
+  // final UniqueKey? chartKey;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -106,7 +109,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   final Duration animDuration = const Duration(milliseconds: 200);
 
-  bool fitInsideBottomTitle = true;
+  bool fitInsideBottomTitle = false;
   bool fitInsideLeftTitle = false;
 
   bool _errorToolTip = false;
@@ -138,6 +141,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   List<FlSpot> _chartData = [];
   List<Map<String, dynamic>> _errorData = [];
   List<Map<String, dynamic>> _altBarTipData = [];
+  bool _valueIsDouble = false;
 
   Widget leftTitles(double value, TitleMeta meta) {
     double max = meta.max;
@@ -202,7 +206,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       }
     }
 
-    String xTitle = "";
+    // String xTitle = "";
     //check if the value is present in the xTitles as a value
     // for (Map<String, int> titleTime in _xTitles) {
     //   if (titleTime.values.first == value.toInt()) {
@@ -210,20 +214,26 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     //     break;
     //   }
     // }
-    xTitle = getDateFromDateTimeStr(
+    String xTitle = getDateFromDateTimeStr(
         DateTime.fromMillisecondsSinceEpoch(value.toInt()).toString(),
-        format: widget.xTimeFormat ?? "MM-dd");
+        format: widget.xTimeFormat);
 
     return SideTitleWidget(
-      space: 16,
+      space: 0,
       axisSide: meta.axisSide,
       fitInside: fitInsideBottomTitle
           ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0)
           : SideTitleFitInsideData.disable(),
-      angle: 4 * pi / 12,
-      child: Text(
-        xTitle, // xTitles[value.toInt()],
-        style: style,
+      // angle: 4 * pi / 12,
+      child: Transform.translate(
+        offset: Offset(0, widget.xSpace),
+        child: Transform.rotate(
+          angle: 4 * pi / 12,
+          child: Text(
+            xTitle, // xTitles[value.toInt()],
+            style: style,
+          ),
+        ),
       ),
     );
   }
@@ -260,12 +270,15 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       {List<Map<String, dynamic>>? errorData,
       List<Map<String, dynamic>>? altBarTipData}) {
     List<FlSpot> chartData = [];
-
+    _valueIsDouble = historyData[0][valKey] is double;
     for (var historyDataItem in historyData) {
       int timestamp =
           DateTime.parse(historyDataItem[timeKey]).millisecondsSinceEpoch;
-      chartData.add(
-          FlSpot(timestamp.toDouble(), double.parse(historyDataItem[valKey])));
+      chartData.add(FlSpot(
+          timestamp.toDouble(),
+          _valueIsDouble
+              ? historyDataItem[valKey]
+              : double.parse(historyDataItem[valKey])));
       if (errorData != null) {
         if (historyDataItem['error_data'] != null) {
           errorData.add({timestamp.toString(): historyDataItem['error_data']});
@@ -313,8 +326,11 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     dataLength = _chartData.length;
     //normalize the data
     List<double> yValues = [];
+
     for (var i = 0; i < dataLength; i++) {
-      yValues.add(double.parse(widget.historyData[i][widget.valKey]));
+      yValues.add(_valueIsDouble
+          ? widget.historyData[i][widget.valKey]
+          : double.parse(widget.historyData[i][widget.valKey]));
     }
     _maxY = findMax(yValues);
     //_maxY = 0.3, _yGridFactor = 10, _maxY = 0.03, _yGridFactor = 100
@@ -353,12 +369,12 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   Widget build(BuildContext context) {
     // give the bar chart a new key to
     // reload the chart with new data
-    if (widget.chartKey != null) {
-      if (_chartKey != widget.chartKey) {
-        _chartKey = widget.chartKey;
-        _loadChartData();
-      }
-    }
+    // if (widget.chartKey != null) {
+    //   if (_chartKey != widget.chartKey) {
+    //     _chartKey = widget.chartKey;
+    //     _loadChartData();
+    //   }
+    // }
     return Column(
       children: [
         if (widget.showTitle)
