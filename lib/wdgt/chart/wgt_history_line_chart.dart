@@ -8,6 +8,7 @@ import 'package:xt_util/xt_util.dart';
 class WgtHistoryLineChart extends StatefulWidget {
   WgtHistoryLineChart({
     Key? key,
+    this.chartKey,
     this.titleWidget,
     this.chartRatio = 1.5,
     this.showMaxYValue = false,
@@ -57,12 +58,14 @@ class WgtHistoryLineChart extends StatefulWidget {
   final Color tooltipTextColor;
   final List<Map<String, dynamic>>? legend;
   final double minY;
+  final UniqueKey? chartKey;
 
   @override
   State<WgtHistoryLineChart> createState() => _WgtHistoryLineChartState();
 }
 
 class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
+  UniqueKey? _chartKey;
   late double touchedValue;
 
   final bool _fitInsideBottomTitle = false;
@@ -304,7 +307,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
     }).toList();
   }
 
-  void _genChartData() {
+  void _loadChartData() {
     _chartDataSets = [];
 
     _maxY = 0;
@@ -373,11 +376,20 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
   @override
   void initState() {
     super.initState();
+    _loadChartData();
+    _chartKey = widget.chartKey;
   }
 
   @override
   Widget build(BuildContext context) {
-    _genChartData();
+    // give the bar chart a new key to
+    // reload the chart with new data
+    if (widget.chartKey != null) {
+      if (_chartKey != widget.chartKey) {
+        _chartKey = widget.chartKey;
+        _loadChartData();
+      }
+    }
 
     _displayDecimal = widget.yDecimal ?? decideDisplayDecimal(_maxY);
     touchedValue = -1;
