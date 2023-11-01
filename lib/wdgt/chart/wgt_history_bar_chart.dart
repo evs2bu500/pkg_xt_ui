@@ -16,7 +16,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     Color? highlightColor,
     Color? bottomTextColor,
     Color? bottomTouchedTextColor,
-    // this.chartKey,
+    this.chartKey,
     this.border,
     this.reservedSizeLeft,
     this.rereservedSizeBottom,
@@ -97,7 +97,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Function? altBarColorIf;
   final Function? prefixLabelIf;
   final String? prefixLabel;
-  // final UniqueKey? chartKey;
+  final UniqueKey? chartKey;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -363,18 +363,19 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     super.initState();
 
     _loadChartData();
+    _chartKey = widget.chartKey;
   }
 
   @override
   Widget build(BuildContext context) {
     // give the bar chart a new key to
     // reload the chart with new data
-    // if (widget.chartKey != null) {
-    //   if (_chartKey != widget.chartKey) {
-    //     _chartKey = widget.chartKey;
-    //     _loadChartData();
-    //   }
-    // }
+    if (widget.chartKey != null) {
+      if (_chartKey != widget.chartKey) {
+        _chartKey = widget.chartKey;
+        _loadChartData();
+      }
+    }
     return Column(
       children: [
         if (widget.showTitle)
