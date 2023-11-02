@@ -8,7 +8,8 @@ class xtInfoBox extends StatelessWidget {
     this.width,
     this.height,
     this.icon,
-    this.iconTextPadding,
+    this.iconTextSpace = 0.0,
+    this.iconOffset = 0.0,
     this.text,
     this.textColor,
     this.boarderColor,
@@ -23,7 +24,8 @@ class xtInfoBox extends StatelessWidget {
   }) : super(key: key);
 
   final Widget? icon;
-  final double? iconTextPadding;
+  final double iconTextSpace;
+  final double iconOffset;
   final String? text;
   final Color? boarderColor;
   final Color? textColor;
@@ -50,11 +52,11 @@ class xtInfoBox extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 3),
-            child: icon,
+          Transform.translate(
+            offset: Offset(iconOffset, 0),
+            child: icon ?? Container(),
           ),
-          SizedBox(width: iconTextPadding ?? 0),
+          SizedBox(width: iconTextSpace),
           // Text(text ?? '',
           //     style: textStyle ??
           //         TextStyle(
