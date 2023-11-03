@@ -47,6 +47,8 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.prefixLabelIf,
     this.prefixLabel,
     required this.yDecimal,
+    this.showXTitle = true,
+    this.showYTitle = true,
   })  : barColor = barColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
         tooltipBackgroundColor = tooltipBackgroundColor ??
@@ -98,6 +100,8 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Function? prefixLabelIf;
   final String? prefixLabel;
   final UniqueKey? chartKey;
+  final bool showXTitle;
+  final bool showYTitle;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -563,14 +567,14 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                         ),
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
-                            showTitles: true,
+                            showTitles: widget.showYTitle,
                             reservedSize: widget.reservedSizeLeft ?? 40,
                             getTitlesWidget: leftTitles,
                           ),
                         ),
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
-                            showTitles: true,
+                            showTitles: widget.showXTitle,
                             reservedSize: widget.rereservedSizeBottom ?? 40,
                             getTitlesWidget: bottomTitles,
                             // for bar chart, maxX is hard coded to 1
