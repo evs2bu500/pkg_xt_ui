@@ -381,6 +381,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       }
     }
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (widget.showTitle)
           widget.titleWidget ??
@@ -396,7 +397,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
         AspectRatio(
           aspectRatio: widget.ratio ?? 2,
           child: Padding(
-            padding: const EdgeInsets.only(right: 20.0, left: 12),
+            padding: const EdgeInsets.only(right: 13.0, left: 13.0),
             child: LayoutBuilder(builder: (context, constraints) {
               final barsSpace = 0.08 * constraints.maxWidth / dataLength;
               final wAdj = widget.reservedSizeLeft == null
