@@ -49,6 +49,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     required this.yDecimal,
     this.showXTitle = true,
     this.showYTitle = true,
+    this.timestampOnSecondLine = false,
   })  : barColor = barColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
         tooltipBackgroundColor = tooltipBackgroundColor ??
@@ -102,6 +103,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final UniqueKey? chartKey;
   final bool showXTitle;
   final bool showYTitle;
+  final bool timestampOnSecondLine;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -544,7 +546,9 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                                       fontSize: 13),
                               children: [
                                 TextSpan(
-                                  text: ' $timeText',
+                                  text: widget.timestampOnSecondLine
+                                      ? '\n$timeText'
+                                      : timeText,
                                   style: TextStyle(
                                     color: widget.tooltipTextColor,
                                     fontWeight: FontWeight.normal,
