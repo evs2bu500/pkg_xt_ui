@@ -9,6 +9,7 @@ class WgtHistoryLineChart extends StatefulWidget {
   WgtHistoryLineChart({
     Key? key,
     this.chartKey,
+    this.isCurved = false,
     this.titleWidget,
     this.chartRatio = 1.5,
     this.showMaxYValue = false,
@@ -30,12 +31,18 @@ class WgtHistoryLineChart extends StatefulWidget {
     Color? bottomTextColor,
     Color? bottomTouchedTextColor,
     Color? tooltipTextColor,
+    this.showTitle = true,
+    this.title = '',
+    this.showXTitle = true,
+    this.showYTitle = true,
+    this.showEmptyMessage = false,
+    this.maxVal,
   })  : bottomTextColor =
             bottomTextColor ?? AppColors.contentColorYellow.withOpacity(0.62),
         bottomTouchedTextColor =
             bottomTouchedTextColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow;
-
+  final bool isCurved;
   final Widget? titleWidget;
   final double chartRatio;
   // final bool isShowingMainData;
@@ -45,6 +52,8 @@ class WgtHistoryLineChart extends StatefulWidget {
   final List<Map<String, List<Map<String, dynamic>>>> historyDataSets;
   final bool showMaxYValue;
   final bool showMinYValue;
+  final double? maxVal;
+  final bool? showEmptyMessage;
   final int? yDecimal;
   final int? interval;
   final double xSpace;
@@ -59,6 +68,10 @@ class WgtHistoryLineChart extends StatefulWidget {
   final List<Map<String, dynamic>>? legend;
   final double minY;
   final UniqueKey? chartKey;
+  final bool showXTitle;
+  final bool showYTitle;
+  final bool showTitle;
+  final String title;
 
   @override
   State<WgtHistoryLineChart> createState() => _WgtHistoryLineChartState();
@@ -185,6 +198,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
         format: widget.xTimeFormat);
 
     return SideTitleWidget(
+      space: 0,
       axisSide: meta.axisSide,
       fitInside: _fitInsideBottomTitle
           ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0)
@@ -348,7 +362,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
         }
 
         _chartDataSets.add(LineChartBarData(
-          isCurved: false,
+          isCurved: widget.isCurved,
           color: color,
           barWidth: 1.5,
           isStrokeCapRound: true,
@@ -393,131 +407,163 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
 
     _displayDecimal = widget.yDecimal ?? decideDisplayDecimal(_maxY);
     touchedValue = -1;
-    return AspectRatio(
-      aspectRatio: widget.chartRatio,
-      child: Stack(
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              widget.titleWidget ?? Container(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 6),
-                  child: LineChart(
-                    LineChartData(
-                      minY: widget.minY - 0.5 * _range > 0
-                          ? widget.minY - 0.5 * _range
-                          : 0,
-                      maxY: _maxY + 0.34 * _range,
-                      lineBarsData: _chartDataSets,
-                      titlesData: FlTitlesData(
-                        show: true,
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: widget.reservedSizeLeft ?? 40,
-                            getTitlesWidget: leftTitles,
-                          ),
-                        ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: widget.rereservedSizeBottom ?? 55,
-                            interval: 5 *
-                                msPerMinute *
-                                ((_timeStampEnd - _timeStampStart).abs() /
-                                        msPerHour)
-                                    .toDouble(),
-                            getTitlesWidget: bottomTitles,
-                          ),
-                        ),
-                      ),
-                      borderData: FlBorderData(
-                        show: true,
-                        border: Border(
-                          bottom: BorderSide(
-                              color: AppColors.primary.withOpacity(0.33),
-                              width: 2),
-                          left: const BorderSide(color: Colors.transparent),
-                          right: const BorderSide(color: Colors.transparent),
-                          top: const BorderSide(color: Colors.transparent),
-                        ),
-                      ),
-                      lineTouchData: LineTouchData(
-                        // enabled: true,
-                        handleBuiltInTouches: true,
-                        getTouchedSpotIndicator: (barData, spotIndexes) {
-                          return spotIndexes.map((spotIndex) {
-                            final flSpot = barData.spots[spotIndex];
-                            if (flSpot.x == 0 || flSpot.x == 6) {
-                              return null;
-                            }
-                            return TouchedSpotIndicatorData(
-                              FlLine(
-                                color: Colors.blueGrey.withOpacity(0.8),
-                                strokeWidth: 2,
-                              ),
-                              FlDotData(
-                                show: true,
-                                getDotPainter: (spot, percent, barData, index) {
-                                  return FlDotCirclePainter(
-                                    radius: 4,
-                                    color: Theme.of(context)
-                                        .hintColor
-                                        .withOpacity(0.5),
-                                    strokeWidth: 2,
-                                    strokeColor:
-                                        Colors.blueGrey.withOpacity(0.8),
-                                  );
-                                },
-                              ),
-                            );
-                          }).toList();
-                        },
-                        touchTooltipData: LineTouchTooltipData(
-                          tooltipRoundedRadius: 2,
-                          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-                          getTooltipItems: getToolTipItems,
-                        ),
-                        touchCallback:
-                            (FlTouchEvent event, LineTouchResponse? lineTouch) {
-                          if (!event.isInterestedForInteractions ||
-                              lineTouch == null ||
-                              lineTouch.lineBarSpots == null) {
-                            setState(() {
-                              touchedValue = -1;
-                            });
-                            return;
-                          }
-                          final value = lineTouch.lineBarSpots![0].x;
-
-                          if (value == 0 || value == 6) {
-                            setState(() {
-                              touchedValue = -1;
-                            });
-                            return;
-                          }
-
-                          setState(() {
-                            touchedValue = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (widget.showTitle)
+          widget.titleWidget ??
+              Text(
+                widget.title,
+                style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
+        AspectRatio(
+          aspectRatio: widget.chartRatio,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 13.0, left: 13.0),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    if (widget.maxVal == 0 && widget.showEmptyMessage == true)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 89.0),
+                          child: Text(
+                            'zero values for the duration',
+                            style: TextStyle(
+                                fontSize: getMaxFitFontSize(
+                                    constraints.maxWidth * 0.75,
+                                    'zero values for the duration',
+                                    const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .hintColor
+                                    .withOpacity(0.13)),
+                          ),
+                        ),
+                      ),
+                    LineChart(
+                      LineChartData(
+                        minY: widget.minY - 0.5 * _range > 0
+                            ? widget.minY - 0.5 * _range
+                            : 0,
+                        maxY: _maxY + 0.34 * _range,
+                        lineBarsData: _chartDataSets,
+                        titlesData: FlTitlesData(
+                          show: true,
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: widget.showYTitle,
+                              reservedSize: widget.reservedSizeLeft ?? 40,
+                              getTitlesWidget: leftTitles,
+                            ),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: widget.showXTitle,
+                              reservedSize: widget.rereservedSizeBottom ?? 55,
+                              interval: 5 *
+                                  msPerMinute *
+                                  ((_timeStampEnd - _timeStampStart).abs() /
+                                          msPerHour)
+                                      .toDouble(),
+                              getTitlesWidget: bottomTitles,
+                            ),
+                          ),
+                        ),
+                        borderData: FlBorderData(
+                          show: true,
+                          border: Border(
+                            bottom: BorderSide(
+                                color: AppColors.primary.withOpacity(0.33),
+                                width: 2),
+                            left: const BorderSide(color: Colors.transparent),
+                            right: const BorderSide(color: Colors.transparent),
+                            top: const BorderSide(color: Colors.transparent),
+                          ),
+                        ),
+                        lineTouchData: LineTouchData(
+                          // enabled: true,
+                          handleBuiltInTouches: true,
+                          getTouchedSpotIndicator: (barData, spotIndexes) {
+                            return spotIndexes.map((spotIndex) {
+                              final flSpot = barData.spots[spotIndex];
+                              if (flSpot.x == 0 || flSpot.x == 6) {
+                                return null;
+                              }
+                              return TouchedSpotIndicatorData(
+                                FlLine(
+                                  color: Colors.blueGrey.withOpacity(0.8),
+                                  strokeWidth: 2,
+                                ),
+                                FlDotData(
+                                  show: true,
+                                  getDotPainter:
+                                      (spot, percent, barData, index) {
+                                    return FlDotCirclePainter(
+                                      radius: 4,
+                                      color: Theme.of(context)
+                                          .hintColor
+                                          .withOpacity(0.5),
+                                      strokeWidth: 2,
+                                      strokeColor:
+                                          Colors.blueGrey.withOpacity(0.8),
+                                    );
+                                  },
+                                ),
+                              );
+                            }).toList();
+                          },
+                          touchTooltipData: LineTouchTooltipData(
+                            tooltipRoundedRadius: 2,
+                            tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
+                            getTooltipItems: getToolTipItems,
+                          ),
+                          touchCallback: (FlTouchEvent event,
+                              LineTouchResponse? lineTouch) {
+                            if (!event.isInterestedForInteractions ||
+                                lineTouch == null ||
+                                lineTouch.lineBarSpots == null) {
+                              setState(() {
+                                touchedValue = -1;
+                              });
+                              return;
+                            }
+                            final value = lineTouch.lineBarSpots![0].x;
+
+                            if (value == 0 || value == 6) {
+                              setState(() {
+                                touchedValue = -1;
+                              });
+                              return;
+                            }
+
+                            setState(() {
+                              touchedValue = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
