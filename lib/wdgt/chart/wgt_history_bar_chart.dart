@@ -530,11 +530,9 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                                 widget.adjK && theVal > widget.kThreashold;
 
                             if (useKcase1 || useKcase2) {
-                              if (theVal > widget.kThreashold) {
-                                theVal = theVal / 1000;
-                                theUnit = widget.yUnitK;
-                                theDecimal = widget.yDecimalK;
-                              }
+                              theVal = theVal / 1000;
+                              theUnit = widget.yUnitK;
+                              theDecimal = widget.yDecimalK;
                             }
 
                             String yText = theVal.toStringAsFixed(
