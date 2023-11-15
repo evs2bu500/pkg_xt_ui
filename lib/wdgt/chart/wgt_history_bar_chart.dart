@@ -30,6 +30,12 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.showTitle = true,
     this.titleWidget,
     this.yUnit = '',
+    this.useK = false,
+    this.adjK = false,
+    this.yUnitK = '',
+    this.yDecimalK = 0,
+    this.kThreashold = 100000,
+    this.commaSeparated = false,
     this.maxVal,
     this.showKonY,
     this.showEmptyMessage,
@@ -104,6 +110,12 @@ class WgtHistoryBarChart extends StatefulWidget {
   final bool showXTitle;
   final bool showYTitle;
   final bool timestampOnSecondLine;
+  final bool commaSeparated;
+  final bool useK;
+  final bool adjK;
+  final String yUnitK;
+  final int yDecimalK;
+  final double kThreashold;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -510,8 +522,27 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                                 format:
                                     widget.tooltipTimeFormat ?? 'MM-dd HH:mm');
 
-                            String yText = rod.toY.toStringAsFixed(
-                                widget.toolTipDecimal ?? widget.yDecimal);
+                            double theVal = rod.toY;
+                            String theUnit = widget.yUnit;
+                            int theDecimal = widget.yDecimal;
+                            bool useKcase1 = widget.useK;
+                            bool useKcase2 =
+                                widget.adjK && theVal > widget.kThreashold;
+
+                            if (useKcase1 || useKcase2) {
+                              if (theVal > widget.kThreashold) {
+                                theVal = theVal / 1000;
+                                theUnit = widget.yUnitK;
+                                theDecimal = widget.yDecimalK;
+                              }
+                            }
+
+                            String yText = theVal.toStringAsFixed(
+                                widget.toolTipDecimal ?? theDecimal);
+                            if (widget.commaSeparated) {
+                              yText = getCommaNumberStr(theVal,
+                                  decimal: widget.toolTipDecimal ?? theDecimal);
+                            }
 
                             if (widget.prefixLabelIf != null) {
                               // String key = group.x.toInt().toString();
@@ -532,9 +563,9 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                                       ? widget.altBarTipIf != null
                                           ? widget.altBarTipIf!(altBarTipValue)
                                               ? widget.altBarTip ?? ''
-                                              : '$yText${widget.yUnit}'
-                                          : '$yText${widget.yUnit}'
-                                      : '$yText${widget.yUnit}',
+                                              : '$yText$theUnit'
+                                          : '$yText$theUnit}'
+                                      : '$yText$theUnit',
                               errorDataText.isEmpty
                                   ? TextStyle(
                                       color: widget.tooltipTextColor,
