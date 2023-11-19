@@ -14,7 +14,7 @@ class xtWgtPopupButton extends StatelessWidget {
     required this.popupChild,
     this.direction,
     this.onHover,
-    this.disabled,
+    this.disabled = false,
     this.bgColor,
   }) : super(key: key);
 
@@ -29,7 +29,7 @@ class xtWgtPopupButton extends StatelessWidget {
   final Widget popupChild;
   final String? direction;
   final Function(bool val)? onHover;
-  final bool? disabled;
+  final bool disabled;
   final Color? bgColor;
 
   @override
@@ -39,7 +39,7 @@ class xtWgtPopupButton extends StatelessWidget {
     double height = this.height ?? 35;
 
     return InkWell(
-      onTap: (disabled != null && disabled!)
+      onTap: disabled
           ? null
           : () {
               final renderBox =
