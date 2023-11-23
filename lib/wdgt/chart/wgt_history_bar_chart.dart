@@ -123,7 +123,7 @@ class WgtHistoryBarChart extends StatefulWidget {
 
 class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   UniqueKey? _chartKey;
-  late double _touchedValue;
+  double _touchedValue = -1;
 
   final Duration animDuration = const Duration(milliseconds: 200);
 
@@ -335,6 +335,9 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   }
 
   void _loadChartData() {
+    if (widget.historyData.isEmpty) {
+      return;
+    }
     _chartData = genHistoryChartData(
         widget.historyData, widget.timeKey, widget.valKey,
         errorData: _errorData, altBarTipData: _altBarTipData);
@@ -425,7 +428,10 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
               // print(widget.key);
               return Stack(
                 children: [
-                  if (widget.maxVal == 0 && widget.showEmptyMessage == true)
+                  if (widget.maxVal != null &&
+                      widget.maxVal == 0 &&
+                      widget.historyData.isNotEmpty &&
+                      widget.showEmptyMessage == true)
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 89.0),
@@ -602,14 +608,18 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: widget.showYTitle,
-                            reservedSize: widget.reservedSizeLeft ?? 40,
+                            reservedSize: widget.showYTitle
+                                ? widget.reservedSizeLeft ?? 40
+                                : 0,
                             getTitlesWidget: leftTitles,
                           ),
                         ),
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: widget.showXTitle,
-                            reservedSize: widget.rereservedSizeBottom ?? 40,
+                            reservedSize: widget.showXTitle
+                                ? widget.rereservedSizeBottom ?? 40
+                                : 0,
                             getTitlesWidget: bottomTitles,
                             // for bar chart, maxX is hard coded to 1
                             // interval is ignored
