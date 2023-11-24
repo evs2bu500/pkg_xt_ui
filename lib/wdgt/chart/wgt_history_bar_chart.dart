@@ -127,8 +127,8 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   final Duration animDuration = const Duration(milliseconds: 200);
 
-  bool fitInsideBottomTitle = false;
-  bool fitInsideLeftTitle = false;
+  final bool _fitInsideBottomTitle = false;
+  final bool _fitInsideLeftTitle = false;
 
   bool _errorToolTip = false;
 
@@ -175,7 +175,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 6,
-      fitInside: fitInsideLeftTitle
+      fitInside: _fitInsideLeftTitle
           ? SideTitleFitInsideData.fromTitleMeta(meta)
           : SideTitleFitInsideData.disable(),
       child: Text(
@@ -239,7 +239,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     return SideTitleWidget(
       space: 0,
       axisSide: meta.axisSide,
-      fitInside: fitInsideBottomTitle
+      fitInside: _fitInsideBottomTitle
           ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0)
           : SideTitleFitInsideData.disable(),
       // angle: 4 * pi / 12,

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:xt_ui/xt_ui.dart';
@@ -37,6 +38,7 @@ class WgtHistoryLineChart extends StatefulWidget {
     this.showYTitle = true,
     this.showEmptyMessage = false,
     this.maxVal,
+    this.bottomTextAngle,
   })  : bottomTextColor =
             bottomTextColor ?? AppColors.contentColorYellow.withOpacity(0.62),
         bottomTouchedTextColor =
@@ -72,6 +74,7 @@ class WgtHistoryLineChart extends StatefulWidget {
   final bool showYTitle;
   final bool showTitle;
   final String title;
+  final double? bottomTextAngle;
 
   @override
   State<WgtHistoryLineChart> createState() => _WgtHistoryLineChartState();
@@ -165,15 +168,22 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
       return Container();
     }
     double hideEdge = 0.05;
-    int range = _timeStampStart - _timeStampEnd;
+    int range = _timeStampEnd - _timeStampStart;
     int margin = (range * hideEdge).toInt();
-    if (value < _timeStampEnd + margin || value > _timeStampStart - margin) {
+    if (value < _timeStampEnd - margin || value > _timeStampStart + margin) {
+      if (kDebugMode) {
+        print(
+            'start: ${_timeStampStart + margin} value: $value end: ${_timeStampEnd - margin}');
+      }
       return Container();
     }
 
     //find the index of the value in the xTitles
     int index = -1;
     for (var i = 0; i < _xTitles.length; i++) {
+      if (kDebugMode) {
+        print('${_xTitles[i].keys.first} ${value.toInt()}');
+      }
       if (double.parse(_xTitles[i].keys.first).toInt() == value.toInt()) {
         index = i;
         break;
@@ -213,7 +223,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
       child: Transform.translate(
         offset: Offset(0, widget.xSpace),
         child: Transform.rotate(
-          angle: 4 * pi / 12,
+          angle: widget.bottomTextAngle ?? 4 * pi / 12,
           child: Text(
             xTitle, // xTitles[value.toInt()],
             style: style,
