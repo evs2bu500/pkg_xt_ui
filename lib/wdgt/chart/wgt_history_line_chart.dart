@@ -39,6 +39,7 @@ class WgtHistoryLineChart extends StatefulWidget {
     this.showEmptyMessage = false,
     this.maxVal,
     this.bottomTextAngle,
+    this.gridColor,
   })  : bottomTextColor =
             bottomTextColor ?? AppColors.contentColorYellow.withOpacity(0.62),
         bottomTouchedTextColor =
@@ -75,6 +76,7 @@ class WgtHistoryLineChart extends StatefulWidget {
   final bool showTitle;
   final String title;
   final double? bottomTextAngle;
+  final Color? gridColor;
 
   @override
   State<WgtHistoryLineChart> createState() => _WgtHistoryLineChartState();
@@ -85,7 +87,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
   late double touchedValue;
 
   final bool _fitInsideBottomTitle = false;
-  final bool _fitInsideLeftTitle = true;
+  final bool _fitInsideLeftTitle = false;
 
   List<Map<String, int>> _xTitles = [];
 
@@ -170,20 +172,20 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
     double hideEdge = 0.05;
     int range = _timeStampEnd - _timeStampStart;
     int margin = (range * hideEdge).toInt();
-    if (value < _timeStampEnd - margin || value > _timeStampStart + margin) {
-      if (kDebugMode) {
-        print(
-            'start: ${_timeStampStart + margin} value: $value end: ${_timeStampEnd - margin}');
-      }
+    if (value < _timeStampStart + margin || value > _timeStampEnd - margin) {
+      // if (kDebugMode) {
+      //   print(
+      //       'start: ${_timeStampStart + margin} value: $value end: ${_timeStampEnd - margin}');
+      // }
       return Container();
     }
 
     //find the index of the value in the xTitles
     int index = -1;
     for (var i = 0; i < _xTitles.length; i++) {
-      if (kDebugMode) {
-        print('${_xTitles[i].keys.first} ${value.toInt()}');
-      }
+      // if (kDebugMode) {
+      //   print('${_xTitles[i].keys.first} ${value.toInt()}');
+      // }
       if (double.parse(_xTitles[i].keys.first).toInt() == value.toInt()) {
         index = i;
         break;
@@ -563,6 +565,41 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
                             setState(() {
                               touchedValue = value;
                             });
+                          },
+                        ),
+                        gridData: FlGridData(
+                          show: true,
+                          drawHorizontalLine: true,
+                          drawVerticalLine: true,
+                          // checkToShowHorizontalLine: (value) =>
+                          //     value * _yGridFactor % 1 == 0,
+                          checkToShowVerticalLine: (value) => value % 1 == 0,
+                          getDrawingHorizontalLine: (value) {
+                            if (value == 0) {
+                              return const FlLine(
+                                color: AppColors.contentColorOrange,
+                                strokeWidth: 2,
+                              );
+                            } else {
+                              return FlLine(
+                                color: Theme.of(context).hintColor.withOpacity(
+                                    0.2), //AppColors.mainGridLineColor,
+                                strokeWidth: 0.5,
+                              );
+                            }
+                          },
+                          getDrawingVerticalLine: (value) {
+                            if (value == 0) {
+                              return const FlLine(
+                                color: Colors.redAccent,
+                                strokeWidth: 10,
+                              );
+                            } else {
+                              return const FlLine(
+                                color: AppColors.mainGridLineColor,
+                                strokeWidth: 0.5,
+                              );
+                            }
                           },
                         ),
                       ),
