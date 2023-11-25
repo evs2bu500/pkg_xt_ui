@@ -32,6 +32,7 @@ class WgtHistoryLineChart extends StatefulWidget {
     Color? bottomTextColor,
     Color? bottomTouchedTextColor,
     Color? tooltipTextColor,
+    Color? tooltipTimeColor,
     this.showTitle = true,
     this.title = '',
     this.showXTitle = true,
@@ -44,7 +45,9 @@ class WgtHistoryLineChart extends StatefulWidget {
             bottomTextColor ?? AppColors.contentColorYellow.withOpacity(0.62),
         bottomTouchedTextColor =
             bottomTouchedTextColor ?? AppColors.contentColorYellow,
-        tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow;
+        tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
+        tooltipTimeColor = tooltipTimeColor ?? Colors.white;
+
   final bool isCurved;
   final Widget? titleWidget;
   final double chartRatio;
@@ -68,6 +71,7 @@ class WgtHistoryLineChart extends StatefulWidget {
   final Color bottomTextColor;
   final Color bottomTouchedTextColor;
   final Color tooltipTextColor;
+  final Color tooltipTimeColor;
   final List<Map<String, dynamic>>? legend;
   final double minY;
   final UniqueKey? chartKey;
@@ -97,7 +101,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
   String _timeFormat = 'HH:mm';
   int _numOfSpots = 0;
   double _maxY = 0;
-  // double _minY = 0;
+  double _minY = double.infinity;
   double _range = 0;
 
   int _displayDecimal = 2;
@@ -109,6 +113,8 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
     List<FlSpot> chartData = [];
     Map<String, dynamic> firstData = historyData.first;
     bool isDouble = firstData[valKey] is double;
+    _maxY = 0;
+    _minY = double.infinity;
     for (var historyDataItem in historyData) {
       int timestamp =
           DateTime.parse(historyDataItem[timeKey]).millisecondsSinceEpoch;
@@ -117,6 +123,9 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
           : double.parse(historyDataItem[valKey]);
       if (value > _maxY) {
         _maxY = value;
+      }
+      if (value < _minY) {
+        _minY = value;
       }
       chartData.add(FlSpot(timestamp.toDouble(), value));
       if (errorData != null) {
@@ -321,7 +330,8 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
                       text: getDateTimeStrFromTimestamp(flSpot.x.toInt(),
                           format: _timeFormat),
                       style: TextStyle(
-                        color: widget.tooltipTextColor,
+                        color:
+                            widget.tooltipTimeColor ?? widget.tooltipTextColor,
                         fontWeight: FontWeight.w300,
                       ),
                     )
@@ -336,7 +346,6 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
   void _loadChartData() {
     _chartDataSets = [];
 
-    _maxY = 0;
     _timeStampStart = 0;
     _timeStampEnd = 0;
     int i = 0;
@@ -393,7 +402,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
         ));
       }
     }
-    _range = _maxY - widget.minY;
+    _range = _maxY - _minY;
     if (_range == 0) {
       _range = 0.1 * widget.minY;
     }
@@ -462,9 +471,8 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
                       ),
                     LineChart(
                       LineChartData(
-                        minY: widget.minY - 0.5 * _range > 0
-                            ? widget.minY - 0.5 * _range
-                            : 0,
+                        minY:
+                            _minY - 0.5 * _range > 0 ? _minY - 0.5 * _range : 0,
                         maxY: _maxY + 0.34 * _range,
                         lineBarsData: _chartDataSets,
                         titlesData: FlTitlesData(
