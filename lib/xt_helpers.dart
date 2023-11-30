@@ -34,7 +34,7 @@ Size? getSize(GlobalKey key) {
   if (box == null) return null;
   Size size = box.size;
 
-  print("size:$size");
+  // print("size:$size");
   return size;
 }
 

@@ -11,6 +11,11 @@ enum ChartType {
   mixed,
 }
 
+enum HistroyDisplayType {
+  chart,
+  table,
+}
+
 enum DataType {
   total,
   diff,
