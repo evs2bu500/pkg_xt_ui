@@ -52,7 +52,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.altBarColorIf,
     this.prefixLabelIf,
     this.prefixLabel,
-    required this.yDecimal,
+    this.yDecimal,
     this.showXTitle = true,
     this.showYTitle = true,
     this.timestampOnSecondLine = false,
@@ -73,7 +73,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final String timeKey;
   final String valKey;
   final int? dominantIntervalSecond;
-  final int yDecimal;
+  final int? yDecimal;
   final String yUnit;
   final double? maxVal;
   final bool? showKonY;
@@ -154,6 +154,8 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   List<Map<String, dynamic>> _altBarTipData = [];
   bool _valueIsDouble = false;
 
+  late int _yDecimal;
+
   Widget leftTitles(double value, TitleMeta meta) {
     double max = meta.max;
     if (!widget.showMaxYValue) {
@@ -178,8 +180,8 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
           widget.showKonY != null
               ? widget.showKonY!
                   ? getK(value)
-                  : value.toStringAsFixed(widget.yDecimal)
-              : value.toStringAsFixed(widget.yDecimal),
+                  : value.toStringAsFixed(_yDecimal)
+              : value.toStringAsFixed(_yDecimal),
           style: style,
           textAlign: TextAlign.center),
     );
@@ -347,6 +349,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
           : double.parse(widget.historyData[i][widget.valKey]));
     }
     _maxY = findMax(yValues);
+    _yDecimal = decideDisplayDecimal(0.5 * _maxY);
     //_maxY = 0.3, _yGridFactor = 10, _maxY = 0.03, _yGridFactor = 100
     _yGridFactor = 1;
     if (_maxY > 0.1) {
@@ -423,6 +426,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                 children: [
                   if (widget.maxVal != null &&
                       widget.maxVal == 0 &&
+                      _maxY == 0 &&
                       widget.historyData.isNotEmpty &&
                       widget.showEmptyMessage == true)
                     Center(
@@ -523,7 +527,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
                             double theVal = rod.toY;
                             String theUnit = widget.yUnit;
-                            int theDecimal = widget.yDecimal;
+                            int theDecimal = widget.yDecimal ?? _yDecimal;
                             bool useKcase1 = widget.useK;
                             bool useKcase2 =
                                 widget.adjK && theVal > widget.kThreashold;
