@@ -56,6 +56,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.showXTitle = true,
     this.showYTitle = true,
     this.timestampOnSecondLine = false,
+    this.stackWidget,
   })  : barColor = barColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
         tooltipBackgroundColor = tooltipBackgroundColor ??
@@ -116,6 +117,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final String yUnitK;
   final int yDecimalK;
   final double kThreashold;
+  final Widget? stackWidget;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -132,27 +134,18 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   bool _errorToolTip = false;
 
-  //check the max value of the list
   List<Map<String, int>> _xTitles = [];
-  // int _xDominantInterval = 0;
-  // double _xInterval = 0;
-  // int _xTitleCount = 8;
-  // int _xSpan = 0;
-  // int _xTitleInterval = 0;
 
   int dataLength = 0;
-  double _maxX = 0;
-  double _xInterval = 1;
+
   double _maxY = 0;
   double _yGridFactor = 1;
-  // List<String> _yTitles = [];
+
   int yAxisTitleCount = 5;
-  // int _prevYAxisTitleIndex = -1;
+
   int _timeStampStart = 0;
   int _timeStampEnd = 0;
 
-  // late double _chartWidth;
-  // double _rodSpace = 5;
   double _barWidth = 10;
   List<BarChartGroupData> _barGroups = [];
 
@@ -677,6 +670,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                     ),
                     // key: UniqueKey(),
                   ),
+                  widget.stackWidget ?? Container(),
                 ],
               );
             }),
