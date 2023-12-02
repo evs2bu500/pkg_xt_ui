@@ -89,6 +89,11 @@ class xtKeyValueText extends StatelessWidget {
             color: Theme.of(context).hintColor,
           ),
       children: [
+        WidgetSpan(
+          child: SizedBox(
+            width: spaceInBetween,
+          ),
+        ),
         valueLoadingAnim == null
             ? TextSpan(
                 text: valueText,
