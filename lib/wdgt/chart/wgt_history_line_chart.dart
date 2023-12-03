@@ -370,8 +370,8 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
         List<FlSpot> chartData = genHistoryChartData(
             historyData, widget.timeKey, widget.valKey,
             errorData: []);
-        _timeStampStart = chartData.first.x.toInt();
-        _timeStampEnd = chartData.last.x.toInt();
+        _timeStampStart = chartData.last.x.toInt();
+        _timeStampEnd = chartData.first.x.toInt();
         _timeFormat = getDateTimeFormat(
             (_timeStampStart - _timeStampEnd).abs() ~/ msPerMinute);
 
