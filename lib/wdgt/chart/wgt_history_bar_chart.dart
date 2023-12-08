@@ -394,19 +394,24 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       }
     }
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (widget.showTitle)
           widget.titleWidget ??
-              Text(
-                widget.title ?? '',
-                style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              (widget.title == null
+                  ? Container()
+                  : Text(
+                      widget.title!,
+                      style: TextStyle(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.8),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
         AspectRatio(
           aspectRatio: widget.ratio ?? 2,
           child: Padding(

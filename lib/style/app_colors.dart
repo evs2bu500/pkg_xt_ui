@@ -185,4 +185,14 @@ class AppColors {
     ];
     return colorList;
   }
+
+  static List<Color> getColorListGreys() {
+    List<Color> colorList = [];
+    colorList = [
+      Colors.grey.shade700,
+      Colors.blueGrey,
+      Colors.grey.shade500,
+    ];
+    return colorList;
+  }
 }
