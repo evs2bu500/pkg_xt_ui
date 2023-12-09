@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xt_util/xt_util.dart';
 import '../../style/app_colors.dart';
@@ -50,6 +51,9 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.showYTitle = true,
     this.timestampOnSecondLine = false,
     this.stackWidget,
+    this.getTooltipXText,
+    this.getXText,
+    this.bottomTextAngle,
     Color? barColor,
     Color? tooltipTextColor,
     Color? tooltipBackgroundColor,
@@ -119,6 +123,9 @@ class WgtHistoryBarChart extends StatefulWidget {
   final int yDecimalK;
   final double kThreashold;
   final Widget? stackWidget;
+  final Function? getTooltipXText;
+  final Function? getXText;
+  final double? bottomTextAngle;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -196,41 +203,37 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       fontSize: 13,
     );
 
-    if (value.toInt() == _timeStampStart || value.toInt() == _timeStampEnd) {
-      return Container();
-    }
-
-    //find the index of the value in the xTitles
-    int index = -1;
-    for (var i = 0; i < _xTitles.length; i++) {
-      if (double.parse(_xTitles[i].keys.first).toInt() == value.toInt()) {
-        index = i;
-        break;
+    String xTitle = '';
+    if (widget.getXText != null) {
+      xTitle = widget.getXText!(value.toInt());
+    } else {
+      if (value.toInt() == _timeStampStart || value.toInt() == _timeStampEnd) {
+        return Container();
       }
-    }
-    if (widget.skipInterval != null) {
-      if (widget.skipInterval! > 2) {
-        if (index > 0 && index % widget.skipInterval! != 0) {
+
+      //find the index of the value in the xTitles
+      int index = -1;
+      for (var i = 0; i < _xTitles.length; i++) {
+        if (double.parse(_xTitles[i].keys.first).toInt() == value.toInt()) {
+          index = i;
+          break;
+        }
+      }
+      if (widget.skipInterval != null) {
+        if (widget.skipInterval! > 2) {
+          if (index > 0 && index % widget.skipInterval! != 0) {
+            return Container();
+          }
+        }
+      } else {
+        if (index > 0 && (widget.skipOddXTitle) && index % 2 == 1) {
           return Container();
         }
       }
-    } else {
-      if (index > 0 && (widget.skipOddXTitle) && index % 2 == 1) {
-        return Container();
-      }
+      xTitle = getDateFromDateTimeStr(
+          DateTime.fromMillisecondsSinceEpoch(value.toInt()).toString(),
+          format: widget.xTimeFormat);
     }
-
-    // String xTitle = "";
-    //check if the value is present in the xTitles as a value
-    // for (Map<String, int> titleTime in _xTitles) {
-    //   if (titleTime.values.first == value.toInt()) {
-    //     xTitle = getDateFromDateTimeStr(titleTime.keys.first, format: "MM-dd");
-    //     break;
-    //   }
-    // }
-    String xTitle = getDateFromDateTimeStr(
-        DateTime.fromMillisecondsSinceEpoch(value.toInt()).toString(),
-        format: widget.xTimeFormat);
 
     return SideTitleWidget(
       space: 0,
@@ -242,7 +245,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       child: Transform.translate(
         offset: Offset(0, widget.xSpace),
         child: Transform.rotate(
-          angle: 4 * pi / 12,
+          angle: widget.bottomTextAngle ?? 4 * pi / 12,
           child: Text(
             xTitle, // xTitles[value.toInt()],
             style: style,
@@ -537,12 +540,15 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                               }
                             }
 
-                            final timeText = getDateFromDateTimeStr(
-                                DateTime.fromMicrosecondsSinceEpoch(
-                                        group.x.toInt() * 1000)
-                                    .toString(),
-                                format:
-                                    widget.tooltipTimeFormat ?? 'MM-dd HH:mm');
+                            final xText = widget.getTooltipXText != null
+                                ? widget.getTooltipXText!(group.x.toInt())
+                                : getDateFromDateTimeStr(
+                                    DateTime.fromMicrosecondsSinceEpoch(
+                                            group.x.toInt() * 1000)
+                                        .toString(),
+                                    format: widget.tooltipTimeFormat ??
+                                        'MM-dd HH:mm');
+                            // if (kDebugMode) {print(group.x);}
 
                             double theVal = rod.toY;
                             String theUnit = widget.yUnit;
@@ -598,8 +604,8 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                               children: [
                                 TextSpan(
                                   text: widget.timestampOnSecondLine
-                                      ? '\n$timeText'
-                                      : timeText,
+                                      ? '\n$xText'
+                                      : xText,
                                   style: TextStyle(
                                     color: widget.tooltipTextColor,
                                     fontWeight: FontWeight.normal,
