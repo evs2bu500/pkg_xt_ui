@@ -8,14 +8,10 @@ import '../../style/app_colors.dart';
 class WgtHistoryBarChart extends StatefulWidget {
   WgtHistoryBarChart({
     super.key,
-    // Key? key,
-    Color? barColor,
-    Color? tooltipTextColor,
-    Color? tooltipBackgroundColor,
-    Color? errorTooltipBackgroundColor,
-    Color? highlightColor,
-    Color? bottomTextColor,
-    Color? bottomTouchedTextColor,
+    required this.timeKey,
+    required this.valKey,
+    required this.historyData,
+    this.chartData,
     this.chartKey,
     this.border,
     this.reservedSizeLeft,
@@ -41,9 +37,6 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.showEmptyMessage,
     this.toolTipDecimal,
     this.showMaxYValue = false,
-    required this.historyData,
-    required this.timeKey,
-    required this.valKey,
     this.dominantIntervalSecond,
     this.altBarTip,
     this.altBarTipKey,
@@ -57,6 +50,13 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.showYTitle = true,
     this.timestampOnSecondLine = false,
     this.stackWidget,
+    Color? barColor,
+    Color? tooltipTextColor,
+    Color? tooltipBackgroundColor,
+    Color? errorTooltipBackgroundColor,
+    Color? highlightColor,
+    Color? bottomTextColor,
+    Color? bottomTouchedTextColor,
   })  : barColor = barColor ?? AppColors.contentColorYellow,
         tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
         tooltipBackgroundColor = tooltipBackgroundColor ??
@@ -72,6 +72,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final List<Map<String, dynamic>> historyData;
   final String timeKey;
   final String valKey;
+  final List<FlSpot>? chartData;
   final int? dominantIntervalSecond;
   final int? yDecimal;
   final String yUnit;
@@ -283,7 +284,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       {List<Map<String, dynamic>>? errorData,
       List<Map<String, dynamic>>? altBarTipData}) {
     List<FlSpot> chartData = [];
-    _valueIsDouble = historyData[0][valKey] is double;
+
     for (var historyDataItem in historyData) {
       int timestamp =
           DateTime.parse(historyDataItem[timeKey]).millisecondsSinceEpoch;
@@ -333,9 +334,17 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     if (widget.historyData.isEmpty) {
       return;
     }
-    _chartData = genHistoryChartData(
-        widget.historyData, widget.timeKey, widget.valKey,
-        errorData: _errorData, altBarTipData: _altBarTipData);
+    bool useWidgetChartData = widget.chartData != null;
+    _valueIsDouble = false;
+    if (useWidgetChartData) {
+      _valueIsDouble = true;
+    } else {
+      _valueIsDouble = widget.historyData[0][widget.valKey] is double;
+    }
+    widget.historyData[0][widget.valKey] is double;
+    _chartData = widget.chartData ??
+        genHistoryChartData(widget.historyData, widget.timeKey, widget.valKey,
+            errorData: _errorData, altBarTipData: _altBarTipData);
 
     // _chartWidth = widget.width ?? 900; //0.8 * MediaQuery.of(context).size.width;
 
@@ -344,10 +353,15 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     List<double> yValues = [];
 
     for (var i = 0; i < dataLength; i++) {
-      yValues.add(_valueIsDouble
-          ? widget.historyData[i][widget.valKey]
-          : double.parse(widget.historyData[i][widget.valKey]));
+      if (useWidgetChartData) {
+        yValues.add(_chartData[i].y);
+      } else {
+        yValues.add(_valueIsDouble
+            ? widget.historyData[i][widget.valKey]
+            : double.parse(widget.historyData[i][widget.valKey]));
+      }
     }
+
     _maxY = findMax(yValues);
     _yDecimal = decideDisplayDecimal(0.5 * _maxY);
     //_maxY = 0.3, _yGridFactor = 10, _maxY = 0.03, _yGridFactor = 100
