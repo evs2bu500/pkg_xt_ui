@@ -294,8 +294,11 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       chartData.add(FlSpot(
           timestamp.toDouble(),
           _valueIsDouble
-              ? historyDataItem[valKey]
-              : double.parse(historyDataItem[valKey])));
+              ? historyDataItem[valKey] ?? 0
+              : double.parse((historyDataItem[valKey] == null ||
+                      historyDataItem[valKey] == 'null')
+                  ? '0'
+                  : historyDataItem[valKey])));
       if (errorData != null) {
         if (historyDataItem['error_data'] != null) {
           errorData.add({timestamp.toString(): historyDataItem['error_data']});
@@ -361,7 +364,10 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       } else {
         yValues.add(_valueIsDouble
             ? widget.historyData[i][widget.valKey]
-            : double.parse(widget.historyData[i][widget.valKey]));
+            : double.parse((widget.historyData[i][widget.valKey] == null ||
+                    widget.historyData[i][widget.valKey] == 'null')
+                ? '0'
+                : widget.historyData[i][widget.valKey]));
       }
     }
 
