@@ -45,6 +45,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.useAltBarColor,
     this.altBarColorIf,
     this.prefixLabelIf,
+    this.getPrefixLabel,
     this.prefixLabel,
     this.yDecimal,
     this.showXTitle = true,
@@ -112,6 +113,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Function? altBarColorIf;
   final Function? prefixLabelIf;
   final String? prefixLabel;
+  final Function? getPrefixLabel;
   final UniqueKey? chartKey;
   final bool showXTitle;
   final bool showYTitle;
@@ -581,8 +583,15 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                               int index = _chartData.indexWhere((element) =>
                                   element.x.toInt() == group.x.toInt());
                               if (index != -1) {
-                                if (widget.prefixLabelIf!(
-                                    index, widget.historyData[index])) {
+                                // if (widget.prefixLabelIf!(
+                                //     index, widget.historyData[index])) {
+                                //   yText = '${widget.prefixLabel ?? ''}$yText';
+                                // }
+
+                                if (widget.getPrefixLabel != null) {
+                                  yText =
+                                      '${widget.getPrefixLabel!(index, widget.historyData[index])}$yText';
+                                } else {
                                   yText = '${widget.prefixLabel ?? ''}$yText';
                                 }
                               }
