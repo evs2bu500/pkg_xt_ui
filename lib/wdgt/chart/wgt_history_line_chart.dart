@@ -404,7 +404,7 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
     }
     _range = _maxY - _minY;
     if (_range == 0) {
-      _range = 0.1 * widget.minY;
+      _range = 0.1 * _minY; //widget.minY;
     }
   }
 
