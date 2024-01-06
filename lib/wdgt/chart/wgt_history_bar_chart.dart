@@ -374,7 +374,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     }
 
     _maxY = findMax(yValues);
-    _yDecimal = decideDisplayDecimal(0.5 * _maxY);
+    _yDecimal = widget.yDecimal ?? decideDisplayDecimal(0.5 * _maxY);
     //_maxY = 0.3, _yGridFactor = 10, _maxY = 0.03, _yGridFactor = 100
     _yGridFactor = 1;
     if (_maxY > 0.1) {
