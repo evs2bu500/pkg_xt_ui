@@ -46,6 +46,7 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.altBarColorIf,
     this.prefixLabelIf,
     this.getPrefixLabel,
+    this.getAltVal,
     this.prefixLabel,
     this.yDecimal,
     this.showXTitle = true,
@@ -55,24 +56,18 @@ class WgtHistoryBarChart extends StatefulWidget {
     this.getTooltipXText,
     this.getXText,
     this.bottomTextAngle,
-    Color? barColor,
-    Color? tooltipTextColor,
-    Color? tooltipBackgroundColor,
-    Color? errorTooltipBackgroundColor,
-    Color? highlightColor,
+    this.hightlightEmpty = false,
+    this.barColor = AppColors.contentColorYellow,
+    this.tooltipTextColor = AppColors.contentColorYellow,
+    this.tooltipBackgroundColor = AppColors.contentColorYellow,
+    this.highlightColor = AppColors.contentColorYellow,
+    this.bottomTouchedTextColor = AppColors.contentColorYellow,
     Color? bottomTextColor,
-    Color? bottomTouchedTextColor,
-  })  : barColor = barColor ?? AppColors.contentColorYellow,
-        tooltipTextColor = tooltipTextColor ?? AppColors.contentColorYellow,
-        tooltipBackgroundColor = tooltipBackgroundColor ??
-            AppColors.contentColorYellow.withOpacity(0.62),
-        errorTooltipBackgroundColor =
+    Color? errorTooltipBackgroundColor,
+  })  : errorTooltipBackgroundColor =
             errorTooltipBackgroundColor ?? Colors.redAccent.withOpacity(0.62),
-        highlightColor = highlightColor ?? AppColors.contentColorYellow,
         bottomTextColor =
-            bottomTextColor ?? AppColors.contentColorYellow.withOpacity(0.62),
-        bottomTouchedTextColor =
-            bottomTouchedTextColor ?? AppColors.contentColorYellow;
+            bottomTextColor ?? AppColors.contentColorYellow.withOpacity(0.62);
 
   final List<Map<String, dynamic>> historyData;
   final String timeKey;
@@ -114,6 +109,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Function? prefixLabelIf;
   final String? prefixLabel;
   final Function? getPrefixLabel;
+  final Function? getAltVal;
   final UniqueKey? chartKey;
   final bool showXTitle;
   final bool showYTitle;
@@ -128,6 +124,7 @@ class WgtHistoryBarChart extends StatefulWidget {
   final Function? getTooltipXText;
   final Function? getXText;
   final double? bottomTextAngle;
+  final bool hightlightEmpty;
 
   @override
   _WgtHistoryBarChartState createState() => _WgtHistoryBarChartState();
@@ -146,7 +143,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   List<Map<String, int>> _xTitles = [];
 
-  int dataLength = 0;
+  // int dataLength = 0;
 
   double _maxY = 0;
   double _yGridFactor = 1;
@@ -159,7 +156,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   double _barWidth = 10;
   List<BarChartGroupData> _barGroups = [];
 
-  List<FlSpot> _chartData = [];
+  final List<FlSpot> _chartData = [];
   List<Map<String, dynamic>> _errorData = [];
   List<Map<String, dynamic>> _altBarTipData = [];
   bool _valueIsDouble = false;
@@ -262,7 +259,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     // double rodWidth = 0.92 * _chartWidth / dataLength;
     // _rodSpace = 0.08 * _chartWidth / dataLength;
     return [
-      for (var i = dataLength - 1; i >= 0; i--)
+      for (var i = _chartData.length - 1; i >= 0; i--)
         BarChartGroupData(
           x: _chartData[i].x.toInt(),
           // barsSpace: _rodSpace,
@@ -323,7 +320,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       }
     }
 
-    if (i == dataLength - touchedValue - 1) {
+    if (i == _chartData.length - touchedValue - 1) {
       return widget.tooltipBackgroundColor;
       // return widget.highlightColor; //Colors.white;
     }
@@ -340,6 +337,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
 
   void _loadChartData() {
     if (widget.historyData.isEmpty) {
+      _chartData.clear();
       return;
     }
     bool useWidgetChartData = widget.chartData != null;
@@ -350,17 +348,18 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
       _valueIsDouble = widget.historyData[0][widget.valKey] is double;
     }
     widget.historyData[0][widget.valKey] is double;
-    _chartData = widget.chartData ??
+    _chartData.clear();
+    _chartData.addAll(widget.chartData ??
         genHistoryChartData(widget.historyData, widget.timeKey, widget.valKey,
-            errorData: _errorData, altBarTipData: _altBarTipData);
+            errorData: _errorData, altBarTipData: _altBarTipData));
 
     // _chartWidth = widget.width ?? 900; //0.8 * MediaQuery.of(context).size.width;
 
-    dataLength = _chartData.length;
+    // dataLength = _chartData.length;
     //normalize the data
     List<double> yValues = [];
 
-    for (var i = 0; i < dataLength; i++) {
+    for (var i = 0; i < _chartData.length; i++) {
       if (useWidgetChartData) {
         yValues.add(_chartData[i].y);
       } else {
@@ -390,11 +389,11 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
     }
 
     _timeStampEnd = _chartData[0].x.toInt();
-    _timeStampStart = _chartData[dataLength - 1].x.toInt();
+    _timeStampStart = _chartData[_chartData.length - 1].x.toInt();
 
     //building xTitles
     _xTitles = [];
-    for (var i = 0; i < dataLength; i++) {
+    for (var i = 0; i < _chartData.length; i++) {
       _xTitles.add(Map.of({_chartData[i].x.toString(): 0}));
     }
     _touchedValue = -1;
@@ -442,12 +441,12 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
           child: Padding(
             padding: const EdgeInsets.only(right: 5.0, left: 5.0),
             child: LayoutBuilder(builder: (context, constraints) {
-              final barsSpace = 0.08 * constraints.maxWidth / dataLength;
+              final barsSpace = 0.08 * constraints.maxWidth / _chartData.length;
               final wAdj = widget.reservedSizeLeft == null
                   ? 0
                   : widget.reservedSizeLeft! - 21;
               final barsWidth =
-                  0.85 * (constraints.maxWidth - wAdj) / dataLength;
+                  0.85 * (constraints.maxWidth - wAdj) / _chartData.length;
 
               _barWidth = barsWidth;
               _barGroups = getBars(_touchedValue.toInt());
@@ -500,6 +499,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                       groupsSpace: barsSpace, //_rodSpace,
                       barGroups: _barGroups,
                       //getData(barsWidth, barsSpace, -1),
+
                       barTouchData: BarTouchData(
                         enabled: true,
                         touchCallback: (FlTouchEvent event, barTouchResponse) {
@@ -557,6 +557,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                               }
                             }
                             String altBarTipValue = '';
+                            // String xText = '';
                             if (_altBarTipData.isNotEmpty) {
                               String key = group.x.toInt().toString();
                               Map<String, dynamic> altBarTip =
@@ -574,6 +575,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                                         .toString(),
                                     format: widget.tooltipTimeFormat ??
                                         'MM-dd HH:mm');
+
                             // if (kDebugMode) {print(group.x);}
 
                             double theVal = rod.toY;
@@ -588,18 +590,26 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
                               theUnit = widget.yUnitK;
                               theDecimal = widget.yDecimalK;
                             }
+                            int index = _chartData.indexWhere((element) =>
+                                element.x.toInt() == group.x.toInt());
 
-                            String yText = theVal.toStringAsFixed(
-                                widget.toolTipDecimal ?? theDecimal);
-                            if (widget.commaSeparated) {
-                              yText = getCommaNumberStr(theVal,
-                                  decimal: widget.toolTipDecimal ?? theDecimal);
+                            String? yText;
+                            if (widget.getAltVal != null) {
+                              yText = widget.getAltVal!(
+                                  index, widget.historyData[index]);
                             }
-
+                            if (yText == null) {
+                              yText = theVal.toStringAsFixed(
+                                  widget.toolTipDecimal ?? theDecimal);
+                              if (widget.commaSeparated) {
+                                yText = getCommaNumberStr(theVal,
+                                    decimal:
+                                        widget.toolTipDecimal ?? theDecimal);
+                              }
+                            }
                             if (widget.prefixLabelIf != null) {
                               // String key = group.x.toInt().toString();
-                              int index = _chartData.indexWhere((element) =>
-                                  element.x.toInt() == group.x.toInt());
+
                               if (index != -1) {
                                 // if (widget.prefixLabelIf!(
                                 //     index, widget.historyData[index])) {
