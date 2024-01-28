@@ -164,7 +164,7 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
   List<Map<String, dynamic>> _altBarTipData = [];
   bool _valueIsDouble = false;
 
-  late int _yDecimal;
+  int _yDecimal = 0;
 
   Widget leftTitles(double value, TitleMeta meta) {
     double max = meta.max;
@@ -454,6 +454,24 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
               // print(widget.key);
               return Stack(
                 children: [
+                  if (widget.historyData.isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 89.0),
+                        child: Text(
+                          'no data for the duration',
+                          style: TextStyle(
+                              fontSize: getMaxFitFontSize(
+                                  constraints.maxWidth * 0.75,
+                                  'no data for the duration',
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context)
+                                  .hintColor
+                                  .withOpacity(0.13)),
+                        ),
+                      ),
+                    ),
                   if (widget.maxVal != null &&
                       widget.maxVal == 0 &&
                       _maxY == 0 &&

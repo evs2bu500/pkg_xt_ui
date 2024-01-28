@@ -43,6 +43,7 @@ class xtInfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
       decoration: BoxDecoration(
         border: Border.all(color: boarderColor ?? xtTransParent),
         borderRadius: BorderRadius.circular(borderRadius ?? 0),
@@ -79,24 +80,27 @@ class xtInfoBox extends StatelessWidget {
   }
 
   Widget getConent() {
-    return SelectableText.rich(
-      TextSpan(
-        children: [
-          TextSpan(text: text ?? '', style: textStyle),
-          superText != null
-              ? WidgetSpan(
-                  child: Transform.translate(
-                    offset: const Offset(2.0, -13.0),
-                    child: Text(
-                      superText!,
-                      style: superTextStyle ?? const TextStyle(fontSize: 10),
+    return SizedBox(
+      width: width,
+      child: SelectableText.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: text ?? '', style: textStyle),
+            superText != null
+                ? WidgetSpan(
+                    child: Transform.translate(
+                      offset: const Offset(2.0, -13.0),
+                      child: Text(
+                        superText!,
+                        style: superTextStyle ?? const TextStyle(fontSize: 10),
+                      ),
                     ),
-                  ),
-                )
-              : const TextSpan(),
-        ],
+                  )
+                : const TextSpan(),
+          ],
+        ),
+        maxLines: 1,
       ),
-      maxLines: 1,
     );
   }
 }
