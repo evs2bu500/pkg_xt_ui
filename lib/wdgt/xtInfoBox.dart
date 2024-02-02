@@ -10,6 +10,7 @@ class xtInfoBox extends StatelessWidget {
     this.icon,
     this.iconTextSpace = 0.0,
     this.iconOffset = 0.0,
+    this.maxLines,
     this.text,
     this.textColor,
     this.boarderColor,
@@ -39,11 +40,49 @@ class xtInfoBox extends StatelessWidget {
   final String? superText;
   final TextStyle? superTextStyle;
   final bool? isSelectable;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
+    return
+        // Container(
+        //   decoration: BoxDecoration(
+        //     border: Border.all(color: boarderColor ?? xtTransParent),
+        //     borderRadius: BorderRadius.circular(borderRadius ?? 0),
+        //   ),
+        //   padding: padding ?? const EdgeInsets.all(8.0),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Transform.translate(
+        //         offset: Offset(iconOffset, 0),
+        //         child: icon ?? Container(),
+        //       ),
+        //       SizedBox(width: iconTextSpace),
+        //       isSelectable ?? true
+        //           ? Flexible(
+        //               child: SelectableText.rich(
+        //               TextSpan(
+        //                 children: [
+        //                   TextSpan(
+        //                       text:
+        //                           text ?? ''), // 'Please enter meter identifier',),
+        //                 ],
+        //               ),
+        //             ))
+        //           : Text(
+        //               text ?? '',
+        //               style: textStyle ??
+        //                   TextStyle(
+        //                       color: textColor ?? Colors.white,
+        //                       fontSize: 17,
+        //                       fontStyle: FontStyle.normal),
+        //             )
+        //     ],
+        //   ),
+        // );
+        Container(
+      // width: width,
       decoration: BoxDecoration(
         border: Border.all(color: boarderColor ?? xtTransParent),
         borderRadius: BorderRadius.circular(borderRadius ?? 0),
@@ -58,14 +97,8 @@ class xtInfoBox extends StatelessWidget {
             child: icon ?? Container(),
           ),
           SizedBox(width: iconTextSpace),
-          // Text(text ?? '',
-          //     style: textStyle ??
-          //         TextStyle(
-          //             color: textColor ?? Colors.white,
-          //             fontSize: 17,
-          //             fontStyle: FontStyle.normal)),
           isSelectable ?? true
-              ? getConent()
+              ? getContent()
               : Text(
                   text ?? '',
                   style: textStyle ??
@@ -79,27 +112,26 @@ class xtInfoBox extends StatelessWidget {
     );
   }
 
-  Widget getConent() {
-    return SizedBox(
-      width: width,
+  Widget getContent() {
+    return Flexible(
+      // width: width,
       child: SelectableText.rich(
         TextSpan(
           children: [
             TextSpan(text: text ?? '', style: textStyle),
-            superText != null
-                ? WidgetSpan(
-                    child: Transform.translate(
-                      offset: const Offset(2.0, -13.0),
-                      child: Text(
-                        superText!,
-                        style: superTextStyle ?? const TextStyle(fontSize: 10),
-                      ),
-                    ),
-                  )
-                : const TextSpan(),
+            if (superText != null)
+              WidgetSpan(
+                child: Transform.translate(
+                  offset: const Offset(2.0, -13.0),
+                  child: Text(
+                    superText!,
+                    style: superTextStyle ?? const TextStyle(fontSize: 10),
+                  ),
+                ),
+              ),
           ],
         ),
-        maxLines: 1,
+        maxLines: maxLines,
       ),
     );
   }
