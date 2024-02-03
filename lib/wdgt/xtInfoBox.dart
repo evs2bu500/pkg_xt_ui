@@ -10,7 +10,7 @@ class xtInfoBox extends StatelessWidget {
     this.icon,
     this.iconTextSpace = 0.0,
     this.iconOffset = 0.0,
-    this.maxLines,
+    this.maxLines = 1,
     this.text,
     this.textColor,
     this.boarderColor,
@@ -40,7 +40,7 @@ class xtInfoBox extends StatelessWidget {
   final String? superText;
   final TextStyle? superTextStyle;
   final bool? isSelectable;
-  final int? maxLines;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
