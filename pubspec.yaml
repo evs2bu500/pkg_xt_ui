@@ -1,6 +1,6 @@
 name: xt_ui
 description: xt_ui package project.
-version: 1.7.16
+version: 1.8.0
 homepage:
 
 environment:
@@ -16,15 +16,17 @@ dependencies:
   # go_router: ^6.2.0  
   flutter_svg: ^2.0.7
   loading_animation_widget: ^1.2.0+4
+
+  xt_util: 
+    # path: ../pkg_xt_util
+    git:
+      url: https://github.com/evs2bu500/pkg_xt_util.git
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  xt_util: 
-    # path: ../pkg_xt_util
-    git:
-      url: https://github.com/evs2bu500/pkg_xt_util.git
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
