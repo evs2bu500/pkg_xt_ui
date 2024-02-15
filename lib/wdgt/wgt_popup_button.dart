@@ -16,6 +16,7 @@ class WgtPopupButton extends StatelessWidget {
     this.onTap,
     this.disabled,
     this.xOffset = 0,
+    this.center = false,
   }) : super(key: key);
 
   // final GlobalKey buttonKey = GlobalKey();
@@ -31,6 +32,7 @@ class WgtPopupButton extends StatelessWidget {
   final Function(bool val)? onHover;
   final bool? disabled;
   final double xOffset;
+  final bool center;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class WgtPopupButton extends StatelessWidget {
                   }
 
                   return Transform.translate(
-                    offset: offset,
+                    offset: center ? Offset.zero : offset,
                     child: Dialog(
                       elevation: 0,
                       backgroundColor: Colors.transparent,
