@@ -9,7 +9,7 @@ environment:
   # flutter: ">=1.17.0"
 
 dependencies:
-  fl_chart: ^0.64.0
+  fl_chart: ^0.66.2
   flutter:
     sdk: flutter
     
