@@ -13,7 +13,8 @@ const String glb_reg_allkeyboard =
 // [a-zA-Z]{2,} matches 2 or more consecutive letters (lowercase or uppercase)
 // [a-zA-Z\s]* matches zero or more consecutive letters (lowercase or uppercase) or whitespace characters
 // [a-zA-Z]{2,}$ matches 2 or more consecutive letters (lowercase or uppercase) and matches the end of the string
-const String glb_reg_fullName = r"^[a-zA-Z]{2,}[a-zA-Z\s]*[a-zA-Z]{2,}$";
+// const String glb_reg_fullName = r"^[a-zA-Z]{2,}[a-zA-Z\s]*[a-zA-Z]{2,}$";
+const String glb_reg_fullName = r"^[a-zA-Z]{2,}([a-zA-Z\s\-]*[a-zA-Z])?$";
 const String glb_fullName_callout = 'Please provide a valid full name';
 const String glb_regNG_fullName = r"[^a-zA-Z '\.]|([.']| )(\.|')|(\s)(\s)";
 // r"^
