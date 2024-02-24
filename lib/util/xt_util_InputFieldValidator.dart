@@ -195,3 +195,36 @@ String? validateConfirmPassword(String? value, String? password,
 
   return result;
 }
+
+String? validateDateTime(String? value,
+    {String? emptyCallout, Map<Enum, String?>? formErrors, Enum? filedKey}) {
+  String? result;
+  // if (value == null) {
+  //   result = 'Please enter date';
+  //   if (emptyCallout != null) {
+  //     result = emptyCallout;
+  //   }
+  // } else {
+  //   if (value.isEmpty) {
+  //     result = 'Please enter date';
+  //     if (emptyCallout != null) {
+  //       result = emptyCallout;
+  //     }
+  //   } else {
+  //     result = null;
+  //   }
+  // }
+
+  //validate date format
+  try {
+    DateTime.parse(value ?? '');
+  } catch (e) {
+    result = 'Invalid date format';
+  }
+
+  if (formErrors != null && filedKey != null) {
+    formErrors[filedKey] = result;
+  }
+
+  return result;
+}
