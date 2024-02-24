@@ -18,9 +18,9 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
 
   xt_util: 
-    # path: ../pkg_xt_util
-    git:
-      url: https://github.com/evs2bu500/pkg_xt_util.git
+    path: ../pkg_xt_util
+    # git:
+    #   url: https://github.com/evs2bu500/pkg_xt_util.git
   
 dev_dependencies:
   flutter_test:
