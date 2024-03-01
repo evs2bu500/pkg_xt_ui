@@ -8,7 +8,7 @@ environment:
   sdk: '>=3.0.3 <4.0.0'  
   # flutter: ">=1.17.0"
 
-dependencies:
+dependencies:  
   file_picker: ^6.1.1
   fl_chart: ^0.66.2
   flutter:
