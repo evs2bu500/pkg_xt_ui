@@ -19,3 +19,5 @@ export 'style/xt_styles.dart';
 export 'util/xt_util_FormCoordinator.dart';
 export 'util/xt_util_InputFieldValidator.dart';
 export 'tmpl/xt_pg_info.dart';
+export 'wdgt/file/wgt_submit_table.dart';
+export 'wdgt/info/empty_result.dart';
