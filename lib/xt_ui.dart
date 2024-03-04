@@ -21,3 +21,4 @@ export 'util/xt_util_InputFieldValidator.dart';
 export 'tmpl/xt_pg_info.dart';
 export 'wdgt/file/wgt_submit_table.dart';
 export 'wdgt/info/empty_result.dart';
+export 'wdgt/chart/wgt_line_chart.dart';
