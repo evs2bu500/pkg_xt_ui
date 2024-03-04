@@ -37,16 +37,20 @@ class _WgtLineChartState extends State<WgtLineChart> {
       {List<Map<String, dynamic>>? errorData}) {
     List<FlSpot> chartData = [];
     Map<String, dynamic> firstData = historyData.first;
-    bool isDouble = firstData[yKey] is double;
+    // bool isDouble = firstData[yKey] is double;
     _maxY = 0;
     _minY = double.infinity;
     for (var historyDataItem in historyData) {
       double xVal = historyDataItem[xKey] is double
           ? historyDataItem[xKey]
-          : double.parse(historyDataItem[xKey]);
-      double value = isDouble
+          : historyDataItem[xKey] is int
+              ? historyDataItem[xKey].toDouble()
+              : double.parse(historyDataItem[xKey]);
+      double value = historyDataItem[yKey] is double
           ? historyDataItem[yKey]
-          : double.parse(historyDataItem[yKey]);
+          : historyDataItem[yKey] is int
+              ? historyDataItem[yKey].toDouble()
+              : double.parse(historyDataItem[yKey]);
       if (value > _maxY) {
         _maxY = value;
       }
