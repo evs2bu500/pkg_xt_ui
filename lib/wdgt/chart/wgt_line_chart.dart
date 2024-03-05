@@ -8,7 +8,7 @@ class WgtLineChart extends StatefulWidget {
     Key? key,
     required this.xKey,
     required this.yKey,
-    required this.historyDataSets,
+    required this.dataSets,
     this.legend,
     this.chartRatio = 1.5,
     this.isCurved = false,
@@ -16,7 +16,7 @@ class WgtLineChart extends StatefulWidget {
 
   final String xKey;
   final String yKey;
-  final List<Map<String, List<Map<String, dynamic>>>> historyDataSets;
+  final List<Map<String, List<Map<String, dynamic>>>> dataSets;
   final List<Map<String, dynamic>>? legend;
   final double chartRatio;
   final bool isCurved;
@@ -75,7 +75,7 @@ class _WgtLineChartState extends State<WgtLineChart> {
     _chartDataSets = [];
 
     int i = 0;
-    for (var historyDataInfo in widget.historyDataSets) {
+    for (var historyDataInfo in widget.dataSets) {
       Color? lineColor;
       if (widget.legend != null) {
         for (var legendItem in widget.legend!) {
