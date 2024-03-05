@@ -12,6 +12,14 @@ class WgtLineChart extends StatefulWidget {
     this.legend,
     this.chartRatio = 1.5,
     this.isCurved = false,
+    this.fitInsideBottomTitle = false,
+    this.fitInsideTopTitle = false,
+    this.fitInsideLeftTitle = false,
+    this.fitInsideRightTitle = false,
+    this.showLeftTitle = true,
+    this.showRightTitle = true,
+    this.showTopTitle = true,
+    this.showBottomTitle = true,
   }) : super(key: key);
 
   final String xKey;
@@ -20,6 +28,14 @@ class WgtLineChart extends StatefulWidget {
   final List<Map<String, dynamic>>? legend;
   final double chartRatio;
   final bool isCurved;
+  final bool fitInsideBottomTitle;
+  final bool fitInsideTopTitle;
+  final bool fitInsideLeftTitle;
+  final bool fitInsideRightTitle;
+  final bool showLeftTitle;
+  final bool showRightTitle;
+  final bool showTopTitle;
+  final bool showBottomTitle;
 
   @override
   State<WgtLineChart> createState() => _WgtLineChartState();
@@ -135,6 +151,26 @@ class _WgtLineChartState extends State<WgtLineChart> {
       child: LineChart(
         LineChartData(
           lineBarsData: _chartDataSets,
+          titlesData: FlTitlesData(
+            show: true,
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: widget.showTopTitle),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: widget.showBottomTitle,
+              ),
+            ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: widget.showLeftTitle,
+                // reservedSize: widget.reservedSizeLeft ?? 40,
+              ),
+            ),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: widget.showRightTitle),
+            ),
+          ),
         ),
       ),
     );
