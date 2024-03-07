@@ -23,3 +23,4 @@ export 'wdgt/file/wgt_submit_table.dart';
 export 'wdgt/info/empty_result.dart';
 export 'wdgt/chart/wgt_line_chart.dart';
 export 'wdgt/chart/wgt_dot_chart.dart';
+export 'wdgt/list/wgt_edit_commit_list.dart';

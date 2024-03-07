@@ -28,7 +28,7 @@ class WgtEditCommitList extends StatefulWidget {
     required this.listConfig,
     required this.listItems,
     this.showCommit = true,
-    required this.doCommit,
+    this.doCommit,
     // required this.getCsvList,
     // this.fieldUpdateModified
     required this.listPrefix,
@@ -59,7 +59,7 @@ class WgtEditCommitList extends StatefulWidget {
   final List<Map<String, dynamic>> listConfig;
   //list of items to be displayed
   final List<Map<String, dynamic>> listItems;
-  final Future<dynamic> Function(List<Map<String, dynamic>>, User) doCommit;
+  final Future<dynamic> Function(List<Map<String, dynamic>>, User)? doCommit;
   final bool showCommit;
   final double? compareValue;
   final double? altCompareValue;
