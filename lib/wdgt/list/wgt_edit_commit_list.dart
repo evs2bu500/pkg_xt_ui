@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 import 'package:xt_ui/xt_ui.dart';
 import 'package:xt_util/xt_util.dart';
 
@@ -201,17 +201,17 @@ class _WgtEditCommitListState extends State<WgtEditCommitList> {
   @override
   void initState() {
     super.initState();
-    _scopeProfile =
-        Provider.of<AppModel>(context, listen: false).portalScopeProfile!;
-    _loggedInUser =
-        Provider.of<UserProvider>(context, listen: false).currentUser;
+    // _scopeProfile =
+    //     Provider.of<AppModel>(context, listen: false).portalScopeProfile!;
+    // _loggedInUser =
+    //     Provider.of<UserProvider>(context, listen: false).currentUser;
 
-    if (_loggedInUser == null) {
-      if (kDebugMode) {
-        print('User is null');
-      }
-      return;
-    }
+    // if (_loggedInUser == null) {
+    //   if (kDebugMode) {
+    //     print('User is null');
+    //   }
+    //   return;
+    // }
 
     _currentMode = widget.displayMode;
     _rows = widget.listItems;
