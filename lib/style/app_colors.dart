@@ -142,6 +142,8 @@ class AppColors {
     contentColorDarkIndigo,
   ];
 
+  final Color commitColor = Colors.amber.shade900.withOpacity(0.8);
+
   static List<Color> getColorList(int colorsNeeded) {
     List<Color> colorList = [];
     if (colorsNeeded <= tier1colors.length) {

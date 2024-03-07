@@ -38,3 +38,28 @@ const TextStyle captionStyle = TextStyle(
   fontSize: 12,
   fontWeight: FontWeight.w400,
 );
+
+BoxDecoration panelBoxDecor(Color boarderColor,
+    {Color? bgColor, double? radius}) {
+  return BoxDecoration(
+      color: bgColor,
+      border: Border(
+        top: BorderSide(
+          width: 1.0,
+          color: boarderColor,
+        ),
+        left: BorderSide(
+          width: 1.0,
+          color: boarderColor,
+        ),
+        right: BorderSide(
+          width: 1.0,
+          color: boarderColor,
+        ),
+        bottom: BorderSide(
+          width: 1.0,
+          color: boarderColor,
+        ),
+      ),
+      borderRadius: BorderRadius.all(Radius.circular(radius ?? 5)));
+}
