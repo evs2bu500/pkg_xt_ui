@@ -17,12 +17,14 @@ class WgtSubmitTable extends StatefulWidget {
     this.fileExtensions,
     this.color,
     required this.getList,
+    this.onGetFileInfo,
   }) : super(key: key);
 
   final String? tooltip;
   final Color? color;
   final List<String>? fileExtensions;
   final Function getList;
+  final Function? onGetFileInfo;
 
   @override
   _WgtSubmitTableState createState() => _WgtSubmitTableState();
@@ -61,6 +63,12 @@ class _WgtSubmitTableState extends State<WgtSubmitTable> {
         filterEmptyRows(_table);
 
         widget.getList(_table);
+        // String filename = result.files.first.name;
+        // widget.onGetFileInfo?.call(filename);
+        if (widget.onGetFileInfo != null) {
+          String filename = result.files.single.name;
+          widget.onGetFileInfo!(filename);
+        }
       } catch (e) {
         if (kDebugMode) {
           print(e);
