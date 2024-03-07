@@ -8,6 +8,8 @@ class WgtLineChart extends StatefulWidget {
     Key? key,
     required this.xKey,
     required this.yKey,
+    this.xAxisName,
+    this.yAxisName,
     required this.dataSets,
     this.legend,
     this.chartRatio = 1.5,
@@ -30,6 +32,8 @@ class WgtLineChart extends StatefulWidget {
 
   final String xKey;
   final String yKey;
+  final String? xAxisName;
+  final String? yAxisName;
   final List<Map<String, List<Map<String, dynamic>>>> dataSets;
   final List<Map<String, dynamic>>? legend;
   final double chartRatio;
@@ -174,7 +178,7 @@ class _WgtLineChartState extends State<WgtLineChart> {
             bottomTitles: AxisTitles(
               axisNameSize: 20,
               axisNameWidget: Text(
-                widget.xKey,
+                widget.xAxisName ?? widget.xKey,
                 style: TextStyle(
                     color:
                         widget.xColor ?? Colors.blue //AppColors.mainTextColor2,
@@ -188,7 +192,7 @@ class _WgtLineChartState extends State<WgtLineChart> {
             leftTitles: AxisTitles(
               axisNameSize: 20,
               axisNameWidget: Text(
-                widget.yKey,
+                widget.yAxisName ?? widget.yKey,
                 style: TextStyle(color: widget.yColor ?? Colors.blue
                     //AppColors.mainTextColor2,
                     ),
