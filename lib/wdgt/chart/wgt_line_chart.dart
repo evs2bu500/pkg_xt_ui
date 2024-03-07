@@ -20,6 +20,12 @@ class WgtLineChart extends StatefulWidget {
     this.showRightTitle = true,
     this.showTopTitle = true,
     this.showBottomTitle = true,
+    this.reservedSizeLeft,
+    this.reservedSizeRight,
+    this.reservedSizeTop,
+    this.reservedSizeBottom,
+    this.xColor,
+    this.yColor,
   }) : super(key: key);
 
   final String xKey;
@@ -36,6 +42,12 @@ class WgtLineChart extends StatefulWidget {
   final bool showRightTitle;
   final bool showTopTitle;
   final bool showBottomTitle;
+  final double? reservedSizeLeft;
+  final double? reservedSizeRight;
+  final double? reservedSizeTop;
+  final double? reservedSizeBottom;
+  final Color? xColor;
+  final Color? yColor;
 
   @override
   State<WgtLineChart> createState() => _WgtLineChartState();
@@ -154,21 +166,43 @@ class _WgtLineChartState extends State<WgtLineChart> {
           titlesData: FlTitlesData(
             show: true,
             topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: widget.showTopTitle),
+              sideTitles: SideTitles(
+                showTitles: widget.showTopTitle,
+                reservedSize: widget.reservedSizeTop ?? 40,
+              ),
             ),
             bottomTitles: AxisTitles(
+              axisNameSize: 20,
+              axisNameWidget: Text(
+                widget.xKey,
+                style: TextStyle(
+                    color:
+                        widget.xColor ?? Colors.blue //AppColors.mainTextColor2,
+                    ),
+              ),
               sideTitles: SideTitles(
                 showTitles: widget.showBottomTitle,
+                reservedSize: widget.reservedSizeBottom ?? 40,
               ),
             ),
             leftTitles: AxisTitles(
+              axisNameSize: 20,
+              axisNameWidget: Text(
+                widget.yKey,
+                style: TextStyle(color: widget.yColor ?? Colors.blue
+                    //AppColors.mainTextColor2,
+                    ),
+              ),
               sideTitles: SideTitles(
                 showTitles: widget.showLeftTitle,
-                // reservedSize: widget.reservedSizeLeft ?? 40,
+                reservedSize: widget.reservedSizeLeft ?? 40,
               ),
             ),
             rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: widget.showRightTitle),
+              sideTitles: SideTitles(
+                showTitles: widget.showRightTitle,
+                reservedSize: widget.reservedSizeRight ?? 40,
+              ),
             ),
           ),
         ),
