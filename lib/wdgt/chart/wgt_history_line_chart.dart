@@ -138,6 +138,9 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
   }
 
   Widget leftTitles(double value, TitleMeta meta) {
+    if (widget.historyDataSets.isEmpty) {
+      return Container();
+    }
     double max = meta.max;
     if (!widget.showMaxYValue) {
       if (value > 0.999 * max) {
@@ -344,6 +347,10 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
   }
 
   void _loadChartData() {
+    if (widget.historyDataSets.isEmpty) {
+      _chartDataSets = [];
+      return;
+    }
     _chartDataSets = [];
 
     _timeStampStart = 0;
@@ -450,6 +457,25 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
               builder: (context, constraints) {
                 return Stack(
                   children: [
+                    if (widget.historyDataSets.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 89.0),
+                          child: Text(
+                            'no data for the duration',
+                            style: TextStyle(
+                                fontSize: getMaxFitFontSize(
+                                    constraints.maxWidth * 0.75,
+                                    'no data for the duration',
+                                    const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .hintColor
+                                    .withOpacity(0.13)),
+                          ),
+                        ),
+                      ),
                     if (widget.maxVal == 0 && widget.showEmptyMessage == true)
                       Center(
                         child: Padding(
@@ -471,9 +497,14 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
                       ),
                     LineChart(
                       LineChartData(
-                        minY:
-                            _minY - 0.5 * _range > 0 ? _minY - 0.5 * _range : 0,
-                        maxY: _maxY + 0.34 * _range,
+                        minY: widget.historyDataSets.isEmpty
+                            ? 0
+                            : _minY - 0.5 * _range > 0
+                                ? _minY - 0.5 * _range
+                                : 0,
+                        maxY: widget.historyDataSets.isEmpty
+                            ? 0
+                            : _maxY + 0.34 * _range,
                         lineBarsData: _chartDataSets,
                         titlesData: FlTitlesData(
                           show: true,
@@ -494,11 +525,13 @@ class _WgtHistoryLineChartState extends State<WgtHistoryLineChart> {
                             sideTitles: SideTitles(
                               showTitles: widget.showXTitle,
                               reservedSize: widget.rereservedSizeBottom ?? 55,
-                              interval: 5 *
-                                  msPerMinute *
-                                  ((_timeStampEnd - _timeStampStart).abs() /
-                                          msPerHour)
-                                      .toDouble(),
+                              interval: _timeStampEnd == 0
+                                  ? 1
+                                  : 5 *
+                                      msPerMinute *
+                                      ((_timeStampEnd - _timeStampStart).abs() /
+                                              msPerHour)
+                                          .toDouble(),
                               getTitlesWidget: bottomTitles,
                             ),
                           ),

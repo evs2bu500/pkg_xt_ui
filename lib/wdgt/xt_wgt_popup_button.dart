@@ -16,6 +16,7 @@ class xtWgtPopupButton extends StatelessWidget {
     this.onHover,
     this.disabled = false,
     this.bgColor,
+    this.iniOffset,
   }) : super(key: key);
 
   // final GlobalKey buttonKey = GlobalKey();
@@ -31,6 +32,7 @@ class xtWgtPopupButton extends StatelessWidget {
   final Function(bool val)? onHover;
   final bool disabled;
   final Color? bgColor;
+  final Offset? iniOffset;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +117,7 @@ class xtWgtPopupButton extends StatelessWidget {
                     }
 
                     return Transform.translate(
-                      offset: offset,
+                      offset: iniOffset ?? offset,
                       child: Dialog(
                         backgroundColor: bgColor,
                         child: SizedBox(

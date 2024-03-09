@@ -25,9 +25,9 @@ dependencies:
       url: https://github.com/evs2bu500/pkg_xt_util.git
 
   evs2up_helper: 
-    # path: ../pkg_evs2up_helper
-    git:
-      url: https://github.com/evs2bu500/pkg_evs2up_helper.git     
+    path: ../pkg_evs2up_helper
+    # git:
+    #   url: https://github.com/evs2bu500/pkg_evs2up_helper.git     
   toggle_switch: ^2.1.0
   
 dev_dependencies:
