@@ -91,7 +91,7 @@ class _xtButtonState extends State<xtButton> {
                             BorderRadius.circular(widget.borderRadius!),
                       ),
                     ),
-              onPressed: widget.onPressed,
+              onPressed: widget.waiting ? null : widget.onPressed,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
