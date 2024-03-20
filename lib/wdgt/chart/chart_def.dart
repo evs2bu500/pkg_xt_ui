@@ -26,8 +26,15 @@ enum LookbackType {
   last_48h,
   last_72h,
   last_7d,
+  last_14d,
   mtd,
   all,
+}
+
+enum TrendingType {
+  activeMeter,
+  topup,
+  meterUsage,
 }
 
 String getLookbackTypeLabel(LookbackType lookbackType) {
@@ -40,6 +47,8 @@ String getLookbackTypeLabel(LookbackType lookbackType) {
       return '72h';
     case LookbackType.last_7d:
       return '7d';
+    case LookbackType.last_14d:
+      return '14d';
     case LookbackType.mtd:
       return 'MTD';
     case LookbackType.all:
