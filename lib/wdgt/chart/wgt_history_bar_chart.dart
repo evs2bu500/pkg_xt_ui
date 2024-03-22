@@ -184,10 +184,8 @@ class _WgtHistoryBarChartState extends State<WgtHistoryBarChart> {
           // text,
           // yTitles[index],
           // value.toStringAsFixed(widget.yDecimal),
-          widget.showKonY != null
-              ? widget.showKonY!
-                  ? getK(value)
-                  : value.toStringAsFixed(_yDecimal)
+          (widget.showKonY ?? false)
+              ? getK(value)
               : value.toStringAsFixed(_yDecimal),
           style: style,
           textAlign: TextAlign.center),
