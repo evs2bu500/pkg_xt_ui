@@ -31,6 +31,14 @@ enum LookbackType {
   all,
 }
 
+enum TopStatType {
+  mmsStat,
+  activeMeter,
+  topup,
+  commUsage,
+  meterUsage,
+}
+
 enum TrendingType {
   activeMeter,
   topup,
